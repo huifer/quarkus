@@ -1,0 +1,39 @@
+//To complete this guide, you need:
+要完成本教程，您需要：
+
+ifdef::prerequisites-time[]
+* Roughly {prerequisites-time}
+endif::[]
+ifndef::prerequisites-time[]
+//* Roughly 15 minutes
+* 大约 15 分钟
+endif::[]
+//* An IDE
+* 一个编辑器
+ifdef::prerequisites-ide[{prerequisites-ide}]
+//* JDK 11+ installed with `JAVA_HOME` configured appropriately
+* JDK11+并且有环境变量中存在`JAVA_HOME`
+ifndef::prerequisites-no-maven[]
+//* Apache Maven {maven-version}
+* Apache Maven {maven-version}
+endif::[]
+ifdef::prerequisites-docker[]
+//* A working container runtime (Docker or Podman)
+* 容器运行环境 Docker 或者 Podman
+endif::[]
+ifdef::prerequisites-docker-compose[]
+* Docker and Docker Compose
+endif::[]
+ifndef::prerequisites-no-cli[]
+//* Optionally the xref:cli-tooling.adoc[Quarkus CLI] if you want to use it
+* 如果想要使用Quarkus CLI请查看xref:cli-tooling.adoc[文档]
+endif::[]
+ifndef::prerequisites-no-graalvm[]
+ifndef::prerequisites-graalvm-mandatory[]
+//* Optionally Mandrel or GraalVM installed and xref:building-native-image.adoc#configuring-graalvm[configured appropriately] if you want to build a native executable (or Docker if you use a native container build)
+* 可选安装 Mandrel 或者 GraalVM，相关内容可以查看xref:building-native-image.adoc#configuring-graalvm[GraalVM配置说明]
+endif::[]
+ifdef::prerequisites-graalvm-mandatory[]
+* Mandrel or GraalVM installed and xref:building-native-image.adoc#configuring-graalvm[configured appropriately]
+endif::[]
+endif::[]

@@ -1,0 +1,28 @@
+[NOTE]
+====
+This technology is considered {extension-status}.
+技术版本: {extension-status}
+
+ifeval::["{extension-status}" == "experimental"]
+In _experimental_ mode, early feedback is requested to mature the idea.
+There is no guarantee of stability nor long term presence in the platform until the solution matures.
+Feedback is welcome on our https://groups.google.com/d/forum/quarkus-dev[mailing list] or as issues in our https://github.com/quarkusio/quarkus/issues[GitHub issue tracker].
+endif::[]
+ifeval::["{extension-status}" == "preview"]
+//In _preview_, backward compatibility and presence in the ecosystem is not guaranteed.
+//Specific improvements might require changing configuration or APIs, and plans to become _stable_ are under way.
+//Feedback is welcome on our https://groups.google.com/d/forum/quarkus-dev[mailing list] or as issues in our https://github.com/quarkusio/quarkus/issues[GitHub issue tracker].
+
+在 _预览版本_ 中不保证向后兼容性以及在生态环境中存在。 具体改进可能需要更改配置或者改变API，并且正在指定 _稳定版_ 计划。欢迎在我们的 https://groups.google
+.com/d/forum/quarkus-dev[邮件列表] 或 https://github.com/quarkusio/quarkus/issues[GitHub问题跟踪器] 中提供反馈。
+
+
+endif::[]
+ifeval::["{extension-status}" == "stable"]
+Being _stable_, backward compatibility and presence in the ecosystem are taken very seriously.
+endif::[]
+
+//For a full list of possible statuses, check our https://quarkus.io/faq/#extension-status[FAQ entry].
+
+关于Quarkus的相关问题可以查看 https://quarkus.io/faq/#extension-status[FAQ entry]。
+====

@@ -3,7 +3,8 @@ This guide is maintained in the main Quarkus repository
 and pull requests should be submitted there:
 https://github.com/quarkusio/quarkus/tree/main/docs/src/main/asciidoc
 ////
-= Creating Your First Application
+//= Creating Your First Application
+= 创建第一个应用
 
 include::./attributes.adoc[]
 
@@ -58,51 +59,78 @@ include::includes/devtools/prerequisites-CN.adoc[]
 
 image::getting-started-architecture.png[alt=Architecture, align=center]
 
-This guide also covers the testing of the endpoint.
+//This guide also covers the testing of the endpoint.
+本教程还包含端点的验证
 
-== Solution
+//== Solution
+== 教程源码
+//We recommend that you follow the instructions from <<bootstrapping-the-project,Bootstrapping project>> and onwards to create the application step by step.
 
-We recommend that you follow the instructions from <<bootstrapping-the-project,Bootstrapping project>> and onwards to create the application step by step.
+我们建议您按照<<bootstrapping-the-project,创建Quarkus项目>>文档的说明一步一步完成应用程序的创建。
 
-However, you can go right to the completed example.
+//However, you can go right to the completed example.
+不过，也可以直接使用我们提供的样例工程
 
-Download an {quickstarts-archive-url}[archive] or clone the git repository:
+
+//Download an {quickstarts-archive-url}[archive] or clone the git repository:
+下载或者通过 `git clone` 命令获取 {quickstarts-archive-url}[源代码]
 
 [source,bash,subs=attributes+]
 ----
 git clone {quickstarts-clone-url}
 ----
 
-The solution is located in the `getting-started` {quickstarts-tree-url}/getting-started[directory].
+//The solution is located in the `getting-started` {quickstarts-tree-url}/getting-started[directory].
 
-== Bootstrapping the project
 
-The easiest way to create a new Quarkus project is to open a terminal and run the following command:
+源代码位于 `getting-started` {quickstarts-tree-url}/getting-started[目录] 下 .
 
-For Linux & MacOS users
+//== Bootstrapping the project
+== 创建程序
+
+//The easiest way to create a new Quarkus project is to open a terminal and run the following command:
+
+创建一个 Quarkus 项目，最简单方法是打开终端并运行以下命令：
+
+
+//For Linux & MacOS users
+对与Linux和Mac用户
 
 :create-app-artifact-id: getting-started
 :create-app-extensions: resteasy
 :create-app-code:
 include::includes/devtools/create-app.adoc[]
 
-For Windows users
+//For Windows users
+对与Windows用户
 
-- If using cmd , (don't use backward slash `\` and put everything on the same line)
-- If using Powershell , wrap `-D` parameters in double quotes e.g. `"-DprojectArtifactId=getting-started"`
+//- If using cmd , (don't use backward slash `\` and put everything on the same line)
+- 如果使用CMD，不要使用反斜杠 `\` 请将内容放在同一行内。
+//- If using Powershell , wrap `-D` parameters in double quotes e.g. `"-DprojectArtifactId=getting-started"`
+- 如果使用Powershell，请将 `-D` 的参数信息用双引号将其包裹，例如 `"-DprojectArtifactId=getting-started"`。
 
-It generates the following in  `./getting-started`:
+//It generates the following in  `./getting-started`:
+项目会生成在 `./getting-started` 目录中，该项目包含如下内容：
 
-* the Maven structure
-* an `org.acme.GreetingResource` resource exposed on `/hello`
-* an associated unit test
-* a landing page that is accessible on `http://localhost:8080` after starting the application
-* example `Dockerfile` files for both `native` and `jvm` modes in `src/main/docker`
-* the application configuration file
+//* the Maven structure
+* 一个Maven架构的工程
+//* an `org.acme.GreetingResource` resource exposed on `/hello`
+* 提供 `/hello` 端点的资源类 `org.acme.GreetingResource`
+//* an associated unit test
+* 一个与端点相关的单元测试
+//* a landing page that is accessible on `http://localhost:8080` after starting the application
+* 启动应用程序后，在 `http:localhost:8080` 上访问的登录页面
+//* example `Dockerfile` files for both `native` and `jvm` modes in `src/main/docker`
+* 在 `src/main/docker` 目录下提供进行 `native` 或者 `jvm` 部署的 `Dockerfile` 示例文件
+//* the application configuration file
+* 应用程序配置文件
 
-Once generated, look at the `pom.xml`.
-You will find the import of the Quarkus BOM, allowing you to omit the version of the different Quarkus dependencies.
-In addition, you can see the `quarkus-maven-plugin` responsible of the packaging of the application and also providing the development mode.
+//Once generated, look at the `pom.xml`.
+项目创建完成后查看 `pom.xml` 文件。
+//You will find the import of the Quarkus BOM, allowing you to omit the version of the different Quarkus dependencies.
+您会发现导入了 Quarkus BOM 依赖，它允许省略不同Quarkus依赖向上的版本。
+//In addition, you can see the `quarkus-maven-plugin` responsible of the packaging of the application and also providing the development mode.
+此外，您还可以看到 `quarkus-maven-plugin` 插件，该插件负责提供打包程序以及开发模式。
 
 [source,xml,subs=attributes+]
 ----
@@ -139,12 +167,16 @@ In addition, you can see the `quarkus-maven-plugin` responsible of the packaging
 </build>
 ----
 
-In a Gradle project, you would find a similar setup:
+//In a Gradle project, you would find a similar setup:
+在 Gradle 项目中，您会发现如下设置：
 
-* the Quarkus Gradle plugin
-* an `enforcedPlatform` directive for the Quarkus BOM
+//* the Quarkus Gradle plugin
+* Quarkus Gradle 插件
+//* an `enforcedPlatform` directive for the Quarkus BOM
+* enforcedPlatform 指令导入Quarkus BOM
 
-If we focus on the dependencies section, you can see the extension allowing the development of REST applications:
+//If we focus on the dependencies section, you can see the extension allowing the development of REST applications:
+如果我们专注于依赖部分，您将看到 REST 应用程序的依赖
 
 [source,xml,role="primary asciidoc-tabs-target-sync-cli asciidoc-tabs-target-sync-maven"]
 .pom.xml
@@ -161,9 +193,11 @@ If we focus on the dependencies section, you can see the extension allowing the 
 implementation("io.quarkus:quarkus-resteasy")
 ----
 
-=== The JAX-RS resources
+//=== The JAX-RS resources
+=== JAX-RS 资源
 
-During the project creation, the `src/main/java/org/acme/GreetingResource.java` file has been created with the following content:
+//During the project creation, the `src/main/java/org/acme/GreetingResource.java` file has been created with the following content:
+在项目创建过程中， `src/main/java/org/acme/GreetingResource.java` 文件已经被创建，文件内容如下：
 
 [source,java]
 ----
@@ -185,18 +219,28 @@ public class GreetingResource {
 }
 ----
 
-It's a very simple REST endpoint, returning "Hello RESTEasy" to requests on "/hello".
+//It's a very simple REST endpoint, returning "Hello RESTEasy" to requests on "/hello".
+
+这是一个非常简单的 REST 端点，向 "/hello" 端点发送请求返回"Hello RESTEasy"。
 
 [TIP]
-.Differences with vanilla JAX-RS
+//.Differences with vanilla JAX-RS
+.与传统 JAX-RS的区别
 ====
-With Quarkus, there is no need to create an `Application` class. It's supported, but not required. In addition, only one instance
-of the resource is created and not one per request. You can configure this using the different `*Scoped` annotations (`ApplicationScoped`, `RequestScoped`, etc).
+//With Quarkus, there is no need to create an `Application` class It's supported, but not required. In addition,
+* 使用 Quarkus 不需要创建 `Application` 类 ，可以创建，但是没有必要。
+//only one instance of the resource is created and not one per request.
+* 在多个请求中只会有一个资源实例。
+//You can configure this using the different `*Scoped` annotations (`ApplicationScoped`, `RequestScoped`, etc).
+* 您可以通过配置改变只有一个资源实例的现状，通过 `*Scoped` 注解 (`ApplicationScoped`, `RequestScoped` 等) 来进行配置。
+
 ====
 
-== Running the application
+//== Running the application
+== 启动应用
 
-Now we are ready to run our application:
+//Now we are ready to run our application:
+现在准备运行我们的应用程序：
 
 include::includes/devtools/dev.adoc[]
 
@@ -222,7 +266,9 @@ Listening for transport dt_socket at address: 5005
 2019-02-28 17:05:22,771 INFO  [io.quarkus] (main) Installed features: [cdi, resteasy]
 ----
 
-Once started, you can request the provided endpoint:
+//Once started, you can request the provided endpoint:
+
+启动完成后，您可以请求提供的端点:
 
 [source,shell]
 ----
@@ -230,25 +276,41 @@ $ curl -w "\n" http://localhost:8080/hello
 hello
 ----
 
-Hit `CTRL+C` to stop the application, or keep it running and enjoy the blazing fast hot-reload.
+//Hit `CTRL+C` to stop the application, or keep it running and enjoy the blazing fast hot-reload.
+
+键盘输入 `CTRL+C` 停止应用程序，或保持运行并享受超快的热重载。
 
 [TIP]
-.Automatically add newline with `curl -w "\n"`
+//.Automatically add newline with `curl -w "\n"`
+.使用 `curl -w "\n"` 可以自动添加换行符
 ====
-We are using `curl -w "\n"` in this example to avoid your terminal printing a '%' or put both result and next command prompt on the same line.
+//We are using `curl -w "\n"` in this example to avoid your terminal printing a '%' or put both result and next command prompt on the same line.
+我们在这个例子中使用 `curl -w "\n"` 来避免终端打印 '%' 或将结果和下一个命令提示符放在同一行。
 ====
 
-== Using injection
+//== Using injection
+== 使用注入
 
-Dependency injection in Quarkus is based on ArC which is a CDI-based dependency injection solution tailored for Quarkus' architecture.
-If you're new to CDI then we recommend you to read the xref:cdi.adoc[Introduction to CDI] guide.
+//Dependency injection in Quarkus is based on ArC which is a CDI-based dependency injection solution tailored for Quarkus' architecture.
+Quarkus 中的依赖注入基于 ArC，它是为 Quarkus 架构量身定制的基于 CDI 的依赖注入解决方案。
 
-Quarkus only implements a subset of the CDI features and comes with non-standard features and specific APIS, you can learn more about it in the xref:cdi-reference.adoc[Contexts and Dependency Injection guide].
+//If you're new to CDI then we recommend you to read the xref:cdi.adoc[Introduction to CDI] guide.
+如果您不熟悉 CDI，那么我们建议您阅读 xref:cdi.adoc[CDI 简介] 指南。
 
-ArC comes as a dependency of `quarkus-resteasy` so you already have it handy.
+//Quarkus only implements a subset of the CDI features and comes with non-standard features and specific APIS, you can learn more about it in the xref:cdi-reference.adoc[Contexts and Dependency Injection guide].
 
-Let's modify the application and add a companion bean.
-Create the `src/main/java/org/acme/GreetingService.java` file with the following content:
+Quarkus 仅实现了 CDI 功能的一个子集，并附带非标准功能和特定 APIS，您可以在 xref:cdi-reference.adoc[上下文和依赖注入指南] 中了解更多信息。
+
+//ArC comes as a dependency of `quarkus-resteasy` so you already have it handy.
+
+ArC 是 `quarkus-resteasy` 的依赖项，在项目创建时已经加入到依赖集合中。
+
+//Let's modify the application and add a companion bean.
+让我们修改应用程序并添加一个 bean。
+
+//Create the `src/main/java/org/acme/GreetingService.java` file with the following content:
+
+创建 `src/main/java/org/acme/GreetingService.java` 文件，文件内容如下
 
 [source, java]
 ----
@@ -266,7 +328,9 @@ public class GreetingService {
 }
 ----
 
-Edit the `GreetingResource` class to inject the `GreetingService` and create a new endpoint using it:
+//Edit the `GreetingResource` class to inject the `GreetingService` and create a new endpoint using it:
+
+编辑 `GreetingResource` 类注入 `GreetingService` 依赖，并使用它创建一个新端点：
 
 [source, java]
 ----
@@ -301,13 +365,17 @@ public class GreetingResource {
 }
 ----
 
-If you stopped the application
-(keep in mind you don't have to do it, changes will be automatically deployed by our live reload feature),
-restart the application with:
+//If you stopped the application
+//(keep in mind you don't have to do it, changes will be automatically deployed by our live reload feature),
+//restart the application with:
+
+如果您停止了应用程序（请记住，您不必这样做，所有改动将由Quarkus实时重新加载功能自动部署），请使用以下命令重新启动应用程序：
 
 include::includes/devtools/dev.adoc[]
 
-Then check that the endpoint returns `hello quarkus` as expected:
+//Then check that the endpoint returns `hello quarkus` as expected:
+
+然后检查端点是否按预期返回 `hello quarkus`：
 
 [source,shell,subs=attributes+]
 ----
@@ -315,23 +383,32 @@ $ curl -w "\n" http://localhost:8080/hello/greeting/quarkus
 hello quarkus
 ----
 
-== Development Mode
+//== Development Mode
+== 开发模式
 
-`quarkus:dev` runs Quarkus in development mode. This enables live reload with background compilation, which means
-that when you modify your Java files and/or your resource files and refresh your browser, these changes will automatically take effect.
-This works too for resource files like the configuration property file.
-Refreshing the browser triggers a scan of the workspace, and if any changes are detected, the Java files are recompiled
-and the application is redeployed; your request is then serviced by the redeployed application. If there are any issues
-with compilation or deployment an error page will let you know.
+//`quarkus:dev` runs Quarkus in development mode. This enables live reload with background compilation, which means
+//that when you modify your Java files and/or your resource files and refresh your browser, these changes will automatically take effect.
+//This works too for resource files like the configuration property file.
+`quarkus:dev` 命令会在开发模式下启动 Quarkus 应用。它可以后台编译实现并实时重新加载，这意味着当您修改Java文件、资源文件和刷新浏览器，这些更改将会自动生效。这也适用于配置属性文件等资源文件。
 
-This will also listen for a debugger on port `5005`. If you want to wait for the debugger to attach before running you
-can pass `-Dsuspend` on the command line. If you don't want the debugger at all you can use `-Ddebug=false`.
+//Refreshing the browser triggers a scan of the workspace, and if any changes are detected, the Java files are recompiled
+//and the application is redeployed; your request is then serviced by the redeployed application. If there are any issues
+//with compilation or deployment an error page will let you know.
+刷新浏览器将会触发Quarkus对工作空间的扫描，如果检测到任何更改，则重新编译 Java 文件并重新部署应用程序，然后，重新部署的应用程序会为您的请求提供服务。如果编译或部署有任何问题，错误页面会通知您。
 
-== Testing
 
-All right, so far so good, but wouldn't it be better with a few tests, just in case.
+//This will also listen for a debugger on port `5005`. If you want to wait for the debugger to attach before running you
+//can pass `-Dsuspend` on the command line. If you don't want the debugger at all you can use `-Ddebug=false`.
+Quarkus会监听调试端口 `5005` ，如果您想在运行前连接到该端口可以在命令行中输入 `-Dsuspend` 参数。如果不想要调试可以使用 `-Ddebug=false` 命令关闭调试。
 
-In the generated build file, you can see 2 test dependencies:
+//== Testing
+== 测试
+
+//All right, so far so good, but wouldn't it be better with a few tests, just in case.
+到目前为止一切都很好，但是以防万一，需要做好单元测试。
+
+//In the generated build file, you can see 2 test dependencies:
+在生成的项目文件中，您可以看到 2 个测试依赖项：
 
 [source,xml,role="primary asciidoc-tabs-target-sync-cli asciidoc-tabs-target-sync-maven"]
 .pom.xml
@@ -355,9 +432,11 @@ testImplementation("io.quarkus:quarkus-junit5")
 testImplementation("io.rest-assured:rest-assured")
 ----
 
-Quarkus supports https://junit.org/junit5/[JUnit 5] tests.
+//Quarkus supports https://junit.org/junit5/[JUnit 5] tests.
+Quarkus 支持 https://junit.org/junit5/[JUnit 5] 测试。
 
-Because of this, in the case of Maven, the version of the https://maven.apache.org/surefire/maven-surefire-plugin/[Surefire Maven Plugin] must be set, as the default version does not support JUnit 5:
+//Because of this, in the case of Maven, the version of the https://maven.apache.org/surefire/maven-surefire-plugin/[Surefire Maven Plugin] must be set, as the default version does not support JUnit 5:
+因此，对于 Maven，必须设置 https:maven.apache.orgsurefiremaven-surefire-plugin[Surefire Maven Plugin] 的版本，因为默认版本不支持 JUnit 5：
 
 [source,xml,subs=attributes+]
 ----
@@ -373,11 +452,15 @@ Because of this, in the case of Maven, the version of the https://maven.apache.o
 </plugin>
 ----
 
-We also set the `java.util.logging` system property to make sure tests will use the correct log manager and `maven.home` to ensure that custom configuration
-from `${maven.home}/conf/settings.xml` is applied (if any).
+//We also set the `java.util.logging` system property to make sure tests will use the correct log manager and `maven.home` to ensure that custom configuration
+//from `${maven.home}/conf/settings.xml` is applied (if any).
+我们还设置了 `java.util.logging` 系统属性以确保测使用正确的日志管理器和 `maven.home` 确保配置信息来自 `{maven.home}confsettings.xml` 文件中的自定义配置（如果有）。
 
-The generated project contains a simple test.
-Edit the `src/test/java/org/acme/GreetingResourceTest.java` to match the following content:
+
+//The generated project contains a simple test.
+生成的项目包含一个简单的测试。
+//Edit the `src/test/java/org/acme/GreetingResourceTest.java` to match the following content:
+编辑 `srctestjavaorgacmeGreetingResourceTest.java` 内容如下：
 
 [source,java]
 ----
@@ -416,26 +499,34 @@ public class GreetingResourceTest {
 
 }
 ----
-<1> By using the `QuarkusTest` runner, you instruct JUnit to start the application before the tests.
-<2> Check the HTTP response status code and content
+//<1> By using the `QuarkusTest` runner, you instruct JUnit to start the application before the tests.
+<1> 通过使用 `QuarkusTest` 注解表示正在使用 Quarkus 单元测试
+<2> 检查HTTP响应状态码和内容
 
-These tests use http://rest-assured.io/[RestAssured], but feel free to use your favorite library.
+//These tests use http://rest-assured.io/[RestAssured], but feel free to use your favorite library.
+这些测试使用 http:rest-assured.io[RestAssured] 库，但请随意使用您最喜欢的库。
 
-You can run these using Maven:
+//You can run these using Maven:
+您可以使用 Maven 命令执行测试：
 
 [source,bash,subs=attributes+]
 ----
 ./mvnw test
 ----
 
-You can also run the test from your IDE directly (be sure you stopped the application first).
+//You can also run the test from your IDE directly (be sure you stopped the application first).
+您也可以直接从 IDE 运行测试（确保先停止应用程序）。
 
-By default, tests will run on port `8081` so as not to conflict with the running application. We automatically
-configure RestAssured to use this port. If you want to use a different client you should use the `@TestHTTPResource`
-annotation to directly inject the URL of the tested application into a field on the test class. This field can be of the type
-`String`, `URL` or `URI`. This annotation can also be given a value for the test path. For example, if I want to test
-a Servlet mapped to `/myservlet` I would just add the following to my test:
+//By default, tests will run on port `8081` so as not to conflict with the running application. We automatically
+//configure RestAssured to use this port. If you want to use a different client you should use the `@TestHTTPResource`
+//annotation to directly inject the URL of the tested application into a field on the test class. This field can be of the type
+//`String`, `URL` or `URI`. This annotation can also be given a value for the test path. For example, if I want to test
+//a Servlet mapped to `/myservlet` I would just add the following to my test:
 
+默认情况下，测试将在端口 8081 上运行，以免与正在运行的应用程序冲突。我们自动配置 RestAssured 以使用此端口。如果您想使用不同的客户端，您应该使用 `@TestHTTPResource` 注解将被测应用的URL直接注入到测试类的一个字段中。
+该字段的类型可以是 `String` 、 `URL` 或 `URI`。这个注解也可以被赋予一个测试路径的值。
+
+例如，如果想测试映射到 `myservlet` 的 Servlet，我只需将以下内容添加到我的测试中：
 
 [source,java]
 ----
@@ -443,11 +534,14 @@ a Servlet mapped to `/myservlet` I would just add the following to my test:
 URL testUrl;
 ----
 
-The test port can be controlled via the `quarkus.http.test-port` config property. Quarkus also creates a system
-property called `test.url` that is set to the base test URL for situations where you cannot use injection.
+//The test port can be controlled via the `quarkus.http.test-port` config property. Quarkus also creates a system
+//property called `test.url` that is set to the base test URL for situations where you cannot use injection.
 
-== Working with multi-module project or external modules
 
+测试端口可以通过 `quarkus.http.test-port` 配置进行控制。 Quarkus 还创建了一个名为 `test.url` 的属性，在无法使用注入的情况下将其设置为基本测试 URL。
+
+//== Working with multi-module project or external modules
+== 使用多模块项目或外部模块
 Quarkus heavily utilizes https://github.com/wildfly/jandex[Jandex] at build time, to discover various classes or annotations. One immediately recognizable application of this, is CDI bean discovery.
 As a result, most of the Quarkus extensions will not work properly if this build time discovery isn't properly setup.
 

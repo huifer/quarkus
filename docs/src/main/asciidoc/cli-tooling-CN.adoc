@@ -1,0 +1,668 @@
+////
+This guide is maintained in the main Quarkus repository
+and pull requests should be submitted there:
+https://github.com/quarkusio/quarkus/tree/main/docs/src/main/asciidoc
+////
+//= Building Quarkus apps with Quarkus Command Line Interface (CLI)
+= 使用 Quarkus 命令行(Quarkus-CLI) 创建Quarkus应用
+//:extension-status: preview
+:extension-status: 预览版本
+
+
+include::./attributes.adoc[]
+
+//The `quarkus` command lets you create projects, manage extensions and
+//do essential build and dev commands using the underlying project build tool.
+
+通过 `quarkus` 命令允许您创建项目、管理拓展、执行必要的构建与开发命令。
+
+include::./status-include-CN.adoc[]
+
+== 安装 Quarkus CLI
+
+//The Quarkus CLI is available in several developer-oriented package managers such as:
+
+Quarkus CLI 可以通过如下几个包管理工具进行获取，例如：
+
+* https://sdkman.io[SDKMAN!]
+* https://brew.sh[Homebrew]
+* https://community.chocolatey.org/packages/quarkus[Chocolatey]
+
+//If you already use (or want to use) one of these tools, it is the simplest way to install the Quarkus CLI and keep it updated.
+如果您已经使用(或者想要使用)这些包管理工具，那么这是安装 Quarkus CLI 并且保持更新的最简单方法。
+
+
+//In addition to these package managers, the Quarkus CLI is also installable via https://www.jbang.dev[JBang].
+//Choose the alternative that is the most practical for you://
+除了上述包管理工具以外，Quarkus CLI也可以通过 https://www.jbang.dev[JBang] 进行安装，其他包管理工具候选方案有：
+
+//* JBang - for Linux, macOS and Windows
+* JBang - 适用于 Linux, macOS 和 Windows
+//* SDKMAN! - for Linux and macOS
+* SDKMAN! - 适用于 Linux 和 macOS
+//* Homebrew - for Linux and macOS
+* Homebrew - 适用于 Linux 和 macOS
+//* Chocolatey - for Windows
+* Chocolatey - 适用于 Windows
+
+[role="primary asciidoc-tabs-sync-jbang"]
+.JBang
+****
+//The Quarkus CLI is available as a jar installable using https://jbang.dev[JBang].
+
+Quarkus CLI 可以视作 Jar 使用 https://jbang.dev[JBang] 进行安装
+
+//JBang will use your existing Java or install one for you if needed.
+
+如果需要，JBang 将使用您现有的 Java 或为您安装一个Java。
+
+//On Linux, macOS, and Windows (using WSL or bash compatible shell like Cygwin or MinGW)
+在Linux 、macOS 和 Windows上(使用WSL或者bash兼容的shell，如：Cygwin 和 MinGW)可以执行如下命令进行安装
+[source,bash]
+----
+curl -Ls https://sh.jbang.dev | bash -s - trust add https://repo1.maven.org/maven2/io/quarkus/quarkus-cli/
+curl -Ls https://sh.jbang.dev | bash -s - app install --fresh --force quarkus@quarkusio
+----
+
+//On Windows using Powershell:
+在Windows上使用Powershell通过如下命令进行安装
+[source,powershell]
+----
+iex "& { $(iwr https://ps.jbang.dev) } trust add https://repo1.maven.org/maven2/io/quarkus/quarkus-cli/"
+iex "& { $(iwr https://ps.jbang.dev) } app install --fresh --force quarkus@quarkusio"
+----
+
+//If JBang has already been installed, you can directly use it:
+如果已经安装了JBang可以直接通过如下命令进行安装
+[source,bash]
+// # This can also be used to update to the latest version
+----
+# 该命令也可以用于更新到最新版本
+jbang app install --fresh --force quarkus@quarkusio
+----
+
+//If you want to use a specific version, you can directly target a version:
+
+如果要使用特定的 quarkus 版本可以使用如下命令：
+[source,bash]
+//# Create an alias in order to use a specific version
+----
+# 创建别名以使用特定版本
+jbang app install --name qs2.2.5 io.quarkus:quarkus-cli:2.2.5.Final:runner
+----
+
+//If you have built Quarkus locally, you can use that version:
+如果您在本地构建了 Quarkus，则可以使用该版本：
+[source,bash]
+//# Use the latest (or locally built) snapshot (with qss as an alias)
+----
+# 使用最新的（或本地构建的）快照（以 qss 作为别名）
+jbang app install --force --name qss ~/.m2/repository/io/quarkus/quarkus-cli/999-SNAPSHOT/quarkus-cli-999-SNAPSHOT-runner.jar
+----
+
+//Once installed `quarkus` will be in your `$PATH` and if you run `quarkus --version` it will print the installed version:
+完成 `quarkus` 命令安装后会在环境变量 `$PATH` 中找到，如果您运行 `quarkus --version` 命令将会输出安装版本。
+[source,shell,subs=attributes+]
+----
+quarkus --version
+{quarkus-version}
+----
+
+[CAUTION]
+//.Use a recent JBang version
+.使用最新的 JBang 版本
+====
+//If you get an error about `app` not being readable then you probably
+//have a JBang version older than v0.56.0 installed. Please remove or upgrade it to a recent version.
+如果您收到 `app` 不可读相关的错误信息，那么您可能安装了比 v0.56.0 版本更早的 JBang。请您删除或升级到最新版本。
+
+//If you are installing JBang for the first time, start a new session to update your `PATH`.
+如果这是您第一次使用JBang，请在安装完成后启动一个新的会话来更新 `PATH`
+====
+****
+
+[role="secondary asciidoc-tabs-sync-sdkman"]
+.SDKMAN!
+****
+//https://sdkman.io/[SDKMAN!] can be used to manage development environments.
+//It can manage parallel versions of multiple Software Development Kits on most Unix based systems,
+//making it a very good alternative to keep multiple JDK versions handy.
+
+https://sdkman.io/[SDKMAN!] 用于管理开发环境。它可以在大多数基于 Unix 的系统上管理多个软件开发工具包的发行版本，使用SDKMAN!来管理多个JDK版本也是一个不错的方案。
+
+//
+//With SDKMAN!, you can also install popular Java tools, including the Quarkus CLI.
+使用 SDKMAN! ，您还可以安装主流的 Java 工具包括 Quarkus CLI。
+
+[NOTE]
+====
+//Make sure you have https://sdkman.io/jdks[a JDK installed] before installing the Quarkus CLI.
+在安装 Quarkus CLI 之前确保安装 https://sdkman.io/jdks[JDK]
+
+//To list the available versions of Java, use `sdk list java`.
+//You can then install the version of OpenJDK you want with `sdk install java x.y.z-open`
+//(or the JDK of another vendor if it is your preference).
+如果需要列出可用的 Java 版本可以使用 `sdk list java` 命令，然后如果您想要安装 OpenJDK可以使用 `sdk install java x.y.z-open`
+命令进行安装（如果您愿意可以安装其他供应商提供的JDK）。
+====
+
+//To install the Quarkus CLI using SDKMAN!, run the following command:
+如果需要使用 SDKMAN! 安装 Quarkus CLI请运行如下命令:
+
+[source,shell]
+----
+sdk install quarkus
+----
+
+//It will install the latest version of the Quarkus CLI.
+通过上述命令可以安装最新版本的Quarkus CLI.
+//Once installed `quarkus` will be in your `$PATH` and if you run `quarkus --version` it will print the installed version:
+完成 `quarkus` 命令安装后会在环境变量 `$PATH` 中找到，如果您运行 `quarkus --version` 命令将会输出安装版本。
+
+[source,shell,subs=attributes+]
+----
+quarkus --version
+{quarkus-version}
+----
+
+//SDKMAN! will let you know when new versions are available so updates will be straightforward:
+
+如果您想要通过 SDKMAN! 更新 Quarkus CLI 可以使用如下命令
+
+[source,shell]
+----
+sdk upgrade quarkus
+----
+****
+
+[role="secondary asciidoc-tabs-sync-homebrew"]
+.Homebrew
+****
+//https://brew.sh[Homebrew] is a package manager for macOS (and Linux).
+https://brew.sh[Homebrew] 是 macOS和(Linux) 的包管理工具.
+
+//You can use Homebrew to install (and update) the Quarkus CLI.
+您可以使用 Homebrew 安装（和更新）Quarkus CLI。
+
+[NOTE]
+====
+//Make sure you have a JDK installed before installing the Quarkus CLI.
+//We haven't added an explicit dependency as we wanted to make sure you could use your preferred JDK version.
+确保在安装 Quarkus CLI 之前安装了 JDK。我们没有添加显式依赖项，因为我们希望确保您可以使用您喜欢的 JDK 版本。
+
+//You can install a JDK with `brew install openjdk` for Java 17 or `brew install openjdk@11` for Java 11.
+
+使用 `brew install openjdk` 命令可以为您安装JDK17或者使用 `brew install openjdk@11` 命令安装JDK11
+====
+
+//To install the Quarkus CLI using Homebrew, run the following command:
+如果需要使用 Homebrew 安装 Quarkus CLI请运行如下命令:
+
+
+[source,shell]
+----
+brew install quarkusio/tap/quarkus
+----
+
+//It will install the latest version of the Quarkus CLI.
+通过上述命令可以安装最新版本的Quarkus CLI.
+//This command can also be used to update the Quarkus CLI.
+此命令也可以用于更新 Quarkus CLI.
+//Once installed `quarkus` will be in your `$PATH` and if you run `quarkus --version` it will print the installed version:
+完成 `quarkus` 命令安装后会在环境变量 `$PATH` 中找到，如果您运行 `quarkus --version` 命令将会输出安装版本。
+
+[source,shell,subs=attributes+]
+----
+quarkus --version
+{quarkus-version}
+----
+
+//You can upgrade the Quarkus CLI with:
+您可以使用以下命令升级 Quarkus CLI：
+
+[source,shell]
+----
+brew update <1>
+brew upgrade quarkus <2>
+----
+//<1> Update all package definitions and Homebrew itself
+<1> 更新所有包和Homebrew
+//<2> Upgrade Quarkus CLI to the latest version
+<2> 将 Quarkus CLI 升级到最新版本
+****
+
+[role="secondary asciidoc-tabs-sync-chocolatey"]
+.Chocolatey
+****
+//https://chocolatey.org[Chocolatey] is a package manager for Windows.
+https://chocolatey.org[Chocolatey] 是 Windows的包管理工具
+
+//You can use Chocolatey to install (and update) the Quarkus CLI.
+您可以使用 Chocolatey 安装(和更新) Quarkus CLI.
+
+[NOTE]
+====
+//Make sure you have a JDK installed before installing the Quarkus CLI.
+确保在安装 Quarkus CLI 之前安装了 JDK.
+
+//You can install a JDK with `choco install ojdkbuild17` for Java 17 or `choco install ojdkbuild11` for Java 11.
+您如果想要安装JDK可以使用 `choco install ojdkbuild17` 命令可以安装Java 17 或者使用 `choco install ojdkbuild11` 命令安装Java 11.
+====
+
+//To install the Quarkus CLI using Chocolatey, run the following command:
+如果需要使用 Chocolatey 安装 Quarkus CLI请运行如下命令:
+
+[source,shell]
+----
+choco install quarkus
+----
+
+//It will install the latest version of the Quarkus CLI.
+通过上述命令可以安装最新版本的Quarkus CLI.
+
+//Once installed `quarkus` will be in your `$PATH` and if you run `quarkus --version` it will print the installed version:
+完成 `quarkus` 命令安装后会在环境变量 `$PATH` 中找到，如果您运行 `quarkus --version` 命令将会输出安装版本。
+
+[source,shell,subs=attributes+]
+----
+quarkus --version
+{quarkus-version}
+----
+
+//You can upgrade the Quarkus CLI with:
+您可以使用以下命令升级 Quarkus CLI：
+
+
+[source,shell]
+----
+choco upgrade quarkus
+----
+****
+
+//== Using the CLI
+== 使用 Quarkus CLI
+
+//Use `--help` to display help information with all the available commands:
+
+使用 `--help` 命令可以看到所有可用的帮助信息:
+
+[source,shell]
+----
+quarkus --help
+Usage: quarkus [-ehv] [--verbose] [-D=<String=String>]... [COMMAND]
+
+Options:
+  -D=<String=String>    Java properties
+  -e, --errors          Display error messages.
+  -h, --help            Show this help message and exit.
+  -v, --version         Print version information and exit.
+      --verbose         Verbose mode.
+
+Commands:
+  create                  Create a new project.
+    app                   Create a Quarkus application project.
+    cli                   Create a Quarkus command-line project.
+    extension             Create a Quarkus extension project
+  build                   Build the current project.
+  dev                     Run the current project in dev (live coding) mode.
+  extension, ext          Configure extensions of an existing project.
+    list, ls              List platforms and extensions.
+    categories, cat       List extension categories.
+    add                   Add extension(s) to this project.
+    remove, rm            Remove extension(s) from this project.
+  registry                Configure Quarkus registry client
+    list                  List enabled Quarkus registries
+    add                   Add a Quarkus extension registry
+    remove                Remove a Quarkus extension registry
+  version                 Display version information.
+----
+
+[TIP]
+====
+//While this document is a useful reference, the client help is the definitive source.
+虽然本文档是参考文档,但客户端的信息更加权威.
+//
+//If you don't see the output you expect, use `--help` to verify that you are invoking the command with the right arguments.
+如果您没有看到预期的输出,请使用 `--help` 来检查您是否在使用正确的命令.
+====
+
+[[project-creation]]
+//=== Creating a new project
+=== 创建一个新项目
+
+//To create a new project we use the `create` command
+//(the `app` subcommand is implied when not specified):
+
+如果需要创建一个新项目,可以使用 `create` 命令( `app` 未指定时是一个隐藏命令)
+
+[source,shell]
+----
+quarkus create
+-----------
+
+applying codestarts...
+📚  java
+🔨  maven
+📦  quarkus
+📝  config-properties
+🔧  dockerfiles
+🔧  maven-wrapper
+🚀  resteasy-codestart
+
+-----------
+[SUCCESS] ✅ quarkus project has been successfully generated in:
+--> /<output-dir>/code-with-quarkus
+----
+
+//This will create a folder called 'code-with-quarkus' in your current working directory using default groupId, artifactId and version values
+//(groupId='org.acme', artifactId='code-with-quarkus' and version='1.0.0-SNAPSHOT').
+通过上述命令会在当前工作目录中创建名为 'code-with-quarkus' 的文件夹，使用默认的groupId、artifactId和version(groupId='org.acme', artifactId='code-with-quarkus' and version='1.0.0-SNAPSHOT').
+
+
+//Note: the emoji shown above may not match precisely. The appearance of emoji can vary by font, and terminal/environment. IntelliJ IDEA, for example, has several long-running issues open regarding the behavior/rendering of emoji in the terminal.
+注意: 上面显示的表情符号可能不完全匹配。表情符号的外观会因字体和终端、环境而异。例如， IntelliJ IDEA 在终端中会有个别表情符号长期存在问题。
+
+//As of 2.0.2.Final, you should specify the groupId, artifactId and version using group:artifactId:version coordinate syntax directly on the command line. You can selectively omit segments to use default values:
+从 2.0.2.Final 版本开始，您应该直接在命令上使用 groupId, artifactId 和 version 指定具体信息。您可以选择性的省略以使用默认值。
+
+
+[source,shell]
+//# Create a project with groupId=org.acme, artifactId=bar, and version=1.0.0-SNAPSHOT
+//# Create a project with groupId=com.foo, artifactId=bar, and version=1.0.0-SNAPSHOT
+//# Create a project with groupId=com.foo, artifactId=bar, and version=1.0
+
+----
+# 使用 groupId=org.acme、artifactId=bar 和 version=1.0.0-SNAPSHOT 创建一个项目
+quarkus create app bar
+
+
+//使用 groupId=com.foo、artifactId=bar 和 version=1.0.0-SNAPSHOT 创建一个项目
+quarkus create app com.foo:bar
+// 使用 groupId=com.foo、artifactId=bar 和 version=1.0 创建一个项目
+quarkus create app com.foo:bar:1.0
+----
+
+//The output will show your project being created:
+在创建项目是会在终端看到如下内容：
+
+[source,shell]
+----
+-----------
+
+applying codestarts...
+📚  java
+🔨  maven
+📦  quarkus
+📝  config-properties
+🔧  dockerfiles
+🔧  maven-wrapper
+🚀  resteasy-codestart
+
+-----------
+[SUCCESS] ✅ quarkus project has been successfully generated in:
+--> /<output-dir>/bar
+-----------
+----
+
+//Use the help option to display options for creating projects:
+使用帮助选项显示创建项目时存在的选项列表，具体命令如下。
+
+[source,shell]
+----
+quarkus create app --help
+quarkus create cli --help
+----
+
+[WARNING]
+====
+//Previous versions of the CLI used options `--group-id` (`-g`),`--artifact-id` (`-a`) and `--version` (`-v`) to specify the groupId, artifactId, and version. If the output isn't what you expect, double check your client version `quarkus version` and help `quarkus create app --help`.
+以前版本的 CLI 使用选项 `--group-id` (`-g`),`--artifact-id` (`-a`) 和 `--version` (`-v`) 来指定 groupId、artifactId 和 version 信息。
+如果输出不是您所希望的，请仔细查看您的客户端版本 `quarkus version` 和帮助信息 `quarkus create app --help`。
+====
+
+[[specifying-quarkus-version]]
+=== 指定Quarkus版本
+
+//Both `quarkus create` and `quarkus extension list` allow you to explicitly specify a version of Quarkus in one of two ways:
+`quarkus create` 和 `quarkus extension list` 命令都运行您显示的指定 Quarkus 的版本信息
+
+//1. Specify a specific Platform Release BOM
+1. 指定特定的平台版本
++
+//A https://quarkus.io/guides/platform#quarkus-platform-bom[Quarkus Platform release BOM] is identified by `groupId:artifactId:version` (GAV) coordinates.
+//When specifying a platform release BOM, you may use empty segments to fallback to default values (shown with `quarkus create app --help`).
+//If you specify only one segment (no `:`), it is assumed to be a version.
+https://quarkus.io/guides/platform#quarkus-platform-bom[Quarkus 发布版本] 使用 `groupId:artifactId:version` (GAV) 进行约束。
+在指定发布版本时，您可以使用空段回退到默认值（显示为 `quarkus create app --help`）。
+如果您仅指定一个段 (no `:` )，则假定它是一个版本(默认采用CLI版本)。
+
++
+//For example:
+实例:
++
+//- With the `2.0.0.Final` version of the CLI, specifying `-P :quarkus-bom:` is equivalent to `-P io.quarkus:quarkus-bom:2.0.0.Final`. Specifying `-P 999-SNAPSHOT` is equivalent to `-P io.quarkus:quarkus-bom:999-SNAPSHOT`.
+- 对于 `2.0.0.Final` 版本的 CLI而言，可以通过指定 `-P :quarkus-bom:` 设置 quarkus 版本，这段参数等价于 `-P io.quarkus:quarkus-bom:2.0.0.Final`
+参数。如果需要指定 quarkus 版本为 999-SNAPSHOT 可以使用 `-P 999-SNAPSHOT` 或者 `-P io.quarkus:quarkus-bom:999-SNAPSHOT`.
+，假设指定
+//- With the `2.1.0.Final` version of the CLI, `io.quarkus.platform` is the default group id. Specifying `-P :quarkus-bom:` is equivalent to `-P io.quarkus.platform:quarkus-bom:2.1.0.Final`. Note that you need to specify the group id to work with a snapshot, e.g `-P io.quarkus::999-SNAPSHOT` is equivalent to `-P io.quarkus:quarkus-bom:999-SNAPSHOT`.
+- 对于 `2.1.0.Final` 版本的 CLI，`io.quarkus.platform` 是一个默认的group id . 命令 `-P :quarkus-bom:` 等价于  `-P io.quarkus.platform:quarkus-bom:2.1.0.Final` 命令。请注意，您需要指定group id 才能使用快照，例如 `-P io.quarkus::999-SNAPSHOT` 相当于 `-P io.quarkus:quarkus-bom:999-SNAPSHOT` .
+
++
+//Note: default values are subject to change. Using the `--dry-run` option will show you the computed value.
+注意：默认值可能会发生变化。使用该 `--dry-run` 选项将显示计算值。
+//2. Specify a Platform Stream
+2. 指定平台流
++
+//A platform stream operates against a remote registry. Each registry defines one or more platform streams, and each stream defines one or more platform release BOM files that define how projects using that stream should be configured.
+平台流对远程注册表进行操作。每个注册表定义一个或多个平台流，每个流定义一个或多个平台发布 BOM 文件，这些文件定义应如何配置使用该流的项目。
+
++
+//Streams are identified using `platformKey:streamId` syntax. A specific stream can be specified using `-S platformKey:streamId`. When specifying a stream, empty segments will be replaced with _discovered_ defaults, based on stream resource resolution rules.
+
+平台流使用 `platformKey:streamId` 语法标识。可以使用 `-S platformKey:streamId` 指定特定的平台流。指定平台流时，空段将根据流资源解析规则替换为默认值。
+
+//=== Working with extensions
+=== 使用拓展
+
+[source,shell]
+----
+quarkus ext --help
+----
+
+//==== Listing extensions
+==== 拓展列表
+
+//The Quarkus CLI can be used to list Quarkus extensions.
+Quarkus CLI 可以列出 Quarkus 所支持的所有拓展，命令如下
+
+[source,shell]
+----
+quarkus ext ls
+----
+
+//The format of the result can be controlled with one of four options:
+
+结果的格式可以通过以下四个选项之一进行控制：
+
+//- `--name`    Display the name (artifactId) only
+- `--name`    仅显示名称(artifactId)
+//- `--concise` Display the name (artifactId) and description
+- `--concise` 显示名称(artifactId)和描述
+//- `--full`    Display concise format and version/status-related columns.
+- `--full`    显示简洁的版本和状态信息
+//- `--origins` Display concise information along with the Quarkus platform release origin of the extension.
+- `--origins` 显示版本信息和拓展发布源
+
+//The behavior of `quarkus ext ls` will vary depending on context.
+`quarkus ext ls` 命令的执行结果为会随着上下文而发生变化。
+
+//===== Listing Extensions for a Quarkus release
+===== 列出发布版本的的 quarkus 拓展
+
+//If you invoke the Quarkus CLI from outside of a project, Quarkus will list all of the extensions available for the Quarkus release used by the CLI itself.
+如果您从项目外部调用 Quarkus CLI，Quarkus 将列出 CLI 本身使用的 Quarkus 版本可用的所有扩展
+
+//You can also list extensions for a specific release of Quarkus using `-P` or `-S`, as described in
+//<<specifying-quarkus-version,指定quarkus版本>>.
+
+您还可以使用 `-P` 或者 `-S` 设置Quarkus版本，具体内容见<<specifying-quarkus-version,指定quarkus版本>>。
+
+//This mode uses the `--origins` format by default.
+
+//===== Listing Extensions for a Quarkus project
+===== 列出 Quarkus 项目的扩展
+
+//When working with a Quarkus project, the CLI will list the extensions the current project has installed, using the `--name` format by default.
+在 Quarkus 项目中可以通过 CLI 列出项目内安装的拓展， 命令： `--name` 。
+
+//Use the `--installable` or `-i` option to list extensions that can be installed from the Quarkus platform the project is using.
+使用 `--installable` 或 `-i` 选项列出可以从项目正在使用的 Quarkus 平台安装的扩展。
+
+//You can narrow or filter the list using search (`--search` or `-s`).
+您可以使用 `--search` 或者 `-s` 来过滤输出列表
+
+[source,shell]
+----
+quarkus ext list --concise -i -s jdbc
+JDBC Driver - DB2                                  quarkus-jdbc-db2
+JDBC Driver - PostgreSQL                           quarkus-jdbc-postgresql
+JDBC Driver - H2                                   quarkus-jdbc-h2
+JDBC Driver - MariaDB                              quarkus-jdbc-mariadb
+JDBC Driver - Microsoft SQL Server                 quarkus-jdbc-mssql
+JDBC Driver - MySQL                                quarkus-jdbc-mysql
+JDBC Driver - Oracle                               quarkus-jdbc-oracle
+JDBC Driver - Derby                                quarkus-jdbc-derby
+Elytron Security JDBC                              quarkus-elytron-security-jdbc
+Agroal - Database connection pool                  quarkus-agroal
+----
+
+
+//==== Adding extension(s)
+==== 添加拓展
+
+//The Quarkus CLI can add Quarkus one or more extensions to your project with the 'add'
+//command:
+Quarkus CLI 支持使用 `add` 命令添加一个或多个拓展到您的项目中
+
+[source,shell]
+----
+quarkus ext add kubernetes health
+[SUCCESS] ✅ Extension io.quarkus:quarkus-kubernetes has been installed
+[SUCCESS] ✅ Extension io.quarkus:quarkus-smallrye-health has been installed
+----
+
+//==== Removing extension(s)
+==== 移除拓展
+
+//The Quarkus CLI can remove one or more extensions from your project with the 'remove'
+//command:
+
+
+Quarkus CLI 支持使用 `rm` 命令从您的项目中移除一个或多个拓展
+
+[source,shell]
+----
+quarkus ext rm kubernetes
+[SUCCESS] ✅ Extension io.quarkus:quarkus-kubernetes has been uninstalled
+----
+
+//=== Build your project
+=== 构建项目
+
+//To build your project using the Quarkus CLI (using the default configuration in this example):
+如果您想要通过 Quarkus CLI 构建您的项目您可以通过 `build` 完成（在本示例中使用默认配置）：
+
+[source,shell]
+----
+quarkus build
+[INFO] Scanning for projects...
+[INFO]
+[INFO] ---------------------< org.acme:code-with-quarkus >---------------------
+[INFO] Building code-with-quarkus 1.0.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+...
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  8.331 s
+[INFO] Finished at: 2021-05-27T10:13:28-04:00
+[INFO] ------------------------------------------------------------------------
+----
+
+//NOTE: Output will vary depending on the build tool your project is using (Maven, Gradle, or JBang).
+NOTE: 上述输出内容将由您使用的构建工具（(Maven, Gradle 或 JBang).）不同而有所不同。
+
+
+//=== Development mode
+=== 开发模式
+
+[source,shell]
+----
+quarkus dev --help
+----
+
+//To start dev mode from the Quarkus CLI do:
+如果想要通过 Quarkus CLI 启动开发模式，请执行如下操作：
+
+[source,shell]
+----
+quarkus dev
+[INFO] Scanning for projects...
+[INFO]
+[INFO] ---------------------< org.acme:code-with-quarkus >---------------------
+[INFO] Building code-with-quarkus 1.0.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO]
+...
+Listening for transport dt_socket at address: 5005
+__  ____  __  _____   ___  __ ____  ______
+--/ __ \/ / / / _ | / _ \/ //_/ / / / __/
+-/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \
+--\___\_\____/_/ |_/_/|_/_/|_|\____/___/
+2021-05-27 10:15:56,032 INFO  [io.quarkus] (Quarkus Main Thread) code-with-quarkus 1.0.0-SNAPSHOT on JVM (powered by Quarkus 999-SNAPSHOT) started in 1.387s. Listening on: http://localhost:8080
+2021-05-27 10:15:56,035 INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2021-05-27 10:15:56,035 INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [cdi, resteasy, smallrye-context-propagation]
+
+--
+Tests paused, press [r] to resume
+----
+
+//NOTE: Output will vary depending on the build tool your project is using (Maven, Gradle, or JBang).
+NOTE: 上述输出内容将由您使用的构建工具（(Maven, Gradle 或 JBang).）不同而有所不同。
+
+
+[[quarkus-version-compatibility]]
+[WARNING]
+//.Compatibility with Quarkus 1.x
+.兼容Quarkus 1.x
+====
+//The version 2 Quarkus CLI can not be used with 1.x Quarkus projects or releases. Use the Maven/Gradle plugins when working with Quarkus 1.x projects.
+2.x 版本和 1.x 版本的 Quarkus CLI 无法一起使用。使用  1.x Quarkus项目时建议使用 Maven/Gradle 插件。
+====
+
+//== Shell autocomplete and aliases
+== Shell 自动完成和别名
+
+//Automatic command completion is available for Bash and Zsh:
+自动完成命令可用于 Bash 和 Zsh。
+
+[source,shell]
+//# Setup autocompletion in the current shell
+----
+# 在当前 shell 中设置自动完成
+source <(quarkus completion)
+----
+
+//If you choose to use an alias for the quarkus command, adjust command completion with the following commands:
+如果您选择为 quarkus 命令使用别名，请使用以下命令调整命令完成：
+
+[source,shell]
+//# Add an alias for the quarkus command
+//# Add q to list of commands included in quarkus autocompletion
+----
+# 为quarkus添加别名q
+alias q=quarkus
+# 将 q 添加到 quarkus 自动完成中包含的命令列表
+complete -F _complete_quarkus q
+----

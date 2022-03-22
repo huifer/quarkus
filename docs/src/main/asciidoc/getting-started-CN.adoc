@@ -99,7 +99,7 @@ git clone {quickstarts-clone-url}
 :create-app-artifact-id: getting-started
 :create-app-extensions: resteasy
 :create-app-code:
-include::includes/devtools/create-app.adoc[]
+include::includes/devtools/create-app-CN.adoc[]
 
 //For Windows users
 对与Windows用户
@@ -299,7 +299,7 @@ Quarkus 中的依赖注入基于 ArC，它是为 Quarkus 架构量身定制的�
 
 //Quarkus only implements a subset of the CDI features and comes with non-standard features and specific APIS, you can learn more about it in the xref:cdi-reference.adoc[Contexts and Dependency Injection guide].
 
-Quarkus 仅实现了 CDI 功能的一个子集，并附带非标准功能和特定 APIS，您可以在 xref:cdi-reference.adoc[上下文和依赖注入指南] 中了解更多信息。
+Quarkus 仅实现了 CDI 功能的一个子集，并附带非标准功能和特定 APIS，您可以在 xref:cdi-reference-CN.adoc[上下文和依赖注入指南] 中了解更多信息。
 
 //ArC comes as a dependency of `quarkus-resteasy` so you already have it handy.
 
@@ -542,56 +542,86 @@ URL testUrl;
 
 //== Working with multi-module project or external modules
 == 使用多模块项目或外部模块
-Quarkus heavily utilizes https://github.com/wildfly/jandex[Jandex] at build time, to discover various classes or annotations. One immediately recognizable application of this, is CDI bean discovery.
-As a result, most of the Quarkus extensions will not work properly if this build time discovery isn't properly setup.
+//Quarkus heavily utilizes https://github.com/wildfly/jandex[Jandex] at build time, to discover various classes or annotations. One immediately recognizable application of this, is CDI bean discovery.
+//As a result, most of the Quarkus extensions will not work properly if this build time discovery isn't properly setup.
 
-This index is created by default on the project on which Quarkus is configured for, thanks to our Maven and Gradle plugins.
+Quarkus 在构建时大量使用 https:github.comwildflyjandex[Jandex] 来发现各种类或注解。能够立即识别的应用是 CDI bean 。
+因此，如果未正确配置Jandex数据， Quarkus 扩展大多数情况下无法正常运行。
 
-However, when working with a multi-module project, be sure to read the `Working with multi-module projects` section of the
-xref:maven-tooling.adoc#multi-module-maven[Maven] or xref:gradle-tooling.adoc#multi-module-maven[Gradle] guides.
+//This index is created by default on the project on which Quarkus is configured for, thanks to our Maven and Gradle plugins.
+由于使用 Maven 和 Gradle 插件，该索引是默认在创建 Quarkus 项目时配置完成。
 
-If you plan to use external modules (for example, an external library for all your domain objects),
-you will need to make these modules known to the indexing process either by adding the Jandex plugin (if you can modify them)
-or via the `quarkus.index-dependency` property inside your `application.properties` (useful in cases where you can't modify the module).
+//However, when working with a multi-module project, be sure to read the `Working with multi-module projects` section of the
+//xref:maven-tooling.adoc#multi-module-maven[Maven] or xref:gradle-tooling.adoc#multi-module-maven[Gradle] guides.
 
-Be sure to read the xref:cdi-reference.adoc#bean_discovery[Bean Discovery] section of the CDI guide for more information.
+但是，在使用多模块项目时，请务必阅读 xref:maven-tooling-CN.adoc#multi-module-maven[Maven] 或 xref:gradle-tooling-CN.adoc#multi-module-maven[Gradle]。
 
-== Packaging and run the application
+//If you plan to use external modules (for example, an external library for all your domain objects),
+//you will need to make these modules known to the indexing process either by adding the Jandex plugin (if you can modify them)
+//or via the `quarkus.index-dependency` property inside your `application.properties` (useful in cases where you can't modify the module).
 
-The application is packaged using:
+
+如果您计划使用外部模块（例如，一个第三方库），如果您可以修改这些外部依赖，那么可以自增加 Jandex 插件或者通过 `application.properties` 中的 quarkus.index-dependency` 属性(这个操作在无法修改外部依赖的时候很有用)
+
+//Be sure to read the xref:cdi-reference.adoc#bean_discovery[Bean Discovery] section of the CDI guide for more information.
+请务必阅读 CDI 指南的 xref:cdi-reference-CN.adoc#bean_discovery[Bean Discovery]  部分以获取更多信息。
+
+//== Packaging and run the application
+== 打包和运行应用程序
+
+//The application is packaged using:
+该应用程序使用以下方式打包：
 
 include::includes/devtools/build.adoc[]
 
-It produces several outputs in `/target`:
+//It produces several outputs in `/target`:
+打包结果会在 `/target` 文件夹中：
 
-* `getting-started-1.0.0-SNAPSHOT.jar` - containing just the classes and resources of the projects, it's the regular
-artifact produced by the Maven build - it is *not* the runnable jar;
-* the `quarkus-app` directory which contains the `quarkus-run.jar` jar file - being an executable _jar_. Be aware that it's not an _über-jar_ as
-the dependencies are copied into subdirectories of `quarkus-app/lib/`.
+//* `getting-started-1.0.0-SNAPSHOT.jar` - containing just the classes and resources of the projects, it's the regular
+//artifact produced by the Maven build - it is *not* the runnable jar;
+* `getting-started-1.0.0-SNAPSHOT.jar`  仅包含项目的类和资源，它是Maven构建生成的常规文件， 它是不可运行的jar。
 
-You can run the application using: `java -jar target/quarkus-app/quarkus-run.jar`
+//* the `quarkus-app` directory which contains the `quarkus-run.jar` jar file - being an executable _jar_. Be aware that it's not an _über-jar_ as
+//the dependencies are copied into subdirectories of `quarkus-app/lib/`.
+* `quarkus-app` 文件夹下包含 `quarkus-run.jar` 文件 ，它是一个可执行的jar ，注意他不是一个完整的jar，因为依赖项会被赋值到 `quarkus-app/lib/` 文件夹
 
-NOTE: If you want to deploy your application somewhere (typically in a container), you need to deploy the whole `quarkus-app` directory.
+//You can run the application using: `java -jar target/quarkus-app/quarkus-run.jar`
+您可以使用一下方式运行应用程序: `java -jar target/quarkus-app/quarkus-run.jar`
 
-NOTE: Before running the application, don't forget to stop the hot reload mode (hit `CTRL+C`), or you will have a port conflict.
+//NOTE: If you want to deploy your application somewhere (typically in a container), you need to deploy the whole `quarkus-app` directory.
+NOTE: 如果您想在某个地方（通常在容器中）部署应用程序，则需要部署整个 `quarkus-app` 目录。
+
+//NOTE: Before running the application, don't forget to stop the hot reload mode (hit `CTRL+C`), or you will have a port conflict.
+NOTE: 在运行程序之前，请不要忘记停止热重载模式(键盘输入 `CTRL+C` )，否则会出现端口冲突。
 
 [#banner]
-== Configuring the banner
+//== Configuring the banner
+== 配置 Banner
 
 By default when a Quarkus application starts (in regular or dev mode), it will display an ASCII art banner. The banner can be disabled by setting `quarkus.banner.enabled=false` in `application.properties`,
 by setting the `-Dquarkus.banner.enabled=false` Java System Property, or by setting the `QUARKUS_BANNER_ENABLED` environment variable to `false`.
 Furthermore, users can supply a custom banner by placing the banner file in `src/main/resources` and configuring `quarkus.banner.path=name-of-file` in `application.properties`.
 
-== What's next?
+默认情况下，当Quarkus应用程序启动（在常规或开发模式下）时，它将显示 ASCII 表示的Banner。您可以在 `application.properties` 配置文件中添加 `quarkus.banner.enabled=false` 属性或者在启动时配置 `-Dquarkus.banner.enabled=false` 或者设置系统环境变量 `QUARKUS_BANNER_ENABLED` 为 `false` 来禁用 Banner。
+此外，您可以通过将 Banner 文件放在 `src/main/resources` 路径下，并且在  `application.properties` 配置文件中添加 `quarkus.banner.path=name-of-file` 来修改默认的 ASCII Banner。
 
-This guide covered the creation of an application using Quarkus.
-However, there is much more.
-We recommend continuing the journey with the xref:building-native-image.adoc[building a native executable guide], where you learn about creating a native executable and packaging it in a container.
-If you are interested in reactive, we recommend the xref:getting-started-reactive.adoc[Getting Started with Reactive guide], where you can see how to implement reactive applications with Quarkus.
+//== What's next?
+== 下一步是什么？
+//
+//This guide covered the creation of an application using Quarkus.
+//However, there is much more.
+//We recommend continuing the journey with the xref:building-native-image-CN.adoc[building a native executable guide], where you learn about creating a native executable and packaging it in a container.
+//If you are interested in reactive, we recommend the xref:getting-started-reactive-CN.adoc[Getting Started with Reactive guide], where you can see how to implement reactive applications with Quarkus.
+本教程介绍了如何使用 Quarkus 创建应用程序。然而，还有很多内容没有讲述。建议您继续阅读 xref:building-native-image-CN.adoc[构建本机可执行文件教程] ，您将在其中了解如何创建本机可执行文件，并将其打包到容器中。如果您对响应式感兴趣，我们推荐您阅读 xref:getting-started-reactive-CN.adoc[响应式入门指南] ，您可以在其中了解如何使用 Quarkus 实现响应式应用程序。
 
-In addition, the xref:tooling.adoc[tooling guide] document explains how to:
+//In addition, the xref:tooling-CN.adoc[tooling guide] document explains how to:
+在 xref:tooling-CN.adoc[工具指南] 中将解释如下内容：
 
-* scaffold a project in a single command line
-* enable the _development mode_ (hot reload)
-* import the project in your favorite IDE
-* and more
+//* scaffold a project in a single command line
+* 在单个命令中搭建项目
+//* enable the _development mode_ (hot reload)
+* 启用开发模式（热加载）
+//* import the project in your favorite IDE
+* 在您喜欢的IDE中导入项目
+//* and more
+* 还有更多

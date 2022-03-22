@@ -51,10 +51,14 @@ endif::[]
 ----
 
 ifndef::devtools-no-gradle[]
-To create a Gradle project, add the `--gradle` or `--gradle-kotlin-dsl` option.
+//To create a Gradle project, add the `--gradle` or `--gradle-kotlin-dsl` option.
+
+要创建 Gradle 项目，请添加 `--gradle` 或 `--gradle-kotlin-dsl` 选项。
 endif::[]
 
-_For more information about how to install the Quarkus CLI and use it, please refer to xref:cli-tooling.adoc[the Quarkus CLI guide]._
+//_For more information about how to install the Quarkus CLI and use it, please refer to xref:cli-tooling.adoc[the Quarkus CLI guide]._
+
+有关如何安装和使用 Quarkus CLI 的更多信息，请参阅 xref:cli-tooling.adoc[Quarkus CLI 教程]。
 ****
 
 [role="secondary asciidoc-tabs-sync-maven"]
@@ -100,6 +104,7 @@ endif::[]
 ----
 
 ifndef::devtools-no-gradle[]
-To create a Gradle project, add the `-DbuildTool=gradle` or `-DbuildTool=gradle-kotlin-dsl` option.
+//To create a Gradle project, add the `-DbuildTool=gradle` or `-DbuildTool=gradle-kotlin-dsl` option.
+要创建 Gradle 项目请添加 `-DbuildTool=gradle` 或 `-DbuildTool=gradle-kotlin-dsl` 选项
 endif::[]
 ****

@@ -33,7 +33,8 @@ include::./attributes.adoc[]
 * 功能测试
 //* Packaging of the application
 * 打包程序
-== Prerequisites
+//== Prerequisites
+== 前提
 
 :prerequisites-no-graalvm:
 include::includes/devtools/prerequisites-CN.adoc[]
@@ -45,7 +46,7 @@ include::includes/devtools/prerequisites-CN.adoc[]
 //If you have multiple JDK's installed it is not certain Maven will pick up the expected java
 //and you could end up with unexpected results.
 //You can verify which JDK Maven uses by running `mvn --version`.
-如果您安装了多个 JDK，Maven不一定能够找到您预期的 JDK，从而得到以外的结果，可以通过执行 `mvn --version`来验证正在使用的JDK
+如果您安装了多个 JDK，Maven不一定能够找到您预期的 JDK，从而得到以外的结果，可以通过执行 `mvn --version` 来验证正在使用的JDK
 ====
 
 
@@ -474,10 +475,10 @@ import java.util.UUID;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
 
-@QuarkusTest
+@QuarkusTest  // <1>
 public class GreetingResourceTest {
 
-    @Test    // <1>
+    @Test
     public void testHelloEndpoint() {
         given()
           .when().get("/hello")

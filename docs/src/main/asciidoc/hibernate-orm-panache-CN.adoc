@@ -3,18 +3,24 @@ This guide is maintained in the main Quarkus repository
 and pull requests should be submitted there:
 https://github.com/quarkusio/quarkus/tree/main/docs/src/main/asciidoc
 ////
-= Simplified Hibernate ORM with Panache
+//= Simplified Hibernate ORM with Panache
+= Hibernate ORM 和 Panache
 
 include::./attributes.adoc[]
 :config-file: application.properties
 
-Hibernate ORM is the de facto JPA implementation and offers you the full breadth of an Object Relational Mapper.
-It makes complex mappings possible, but it does not make simple and common mappings trivial.
-Hibernate ORM with Panache focuses on making your entities trivial and fun to write in Quarkus.
+//Hibernate ORM is the de facto JPA implementation and offers you the full breadth of an Object Relational Mapper.
+//It makes complex mappings possible, but it does not make simple and common mappings trivial.
+//Hibernate ORM with Panache focuses on making your entities trivial and fun to write in Quarkus.
+//
+Hibernate ORM 是 JPA 的一种实现，它为您提供了对象关系映射。它使复杂的映射关系成为可能。带有 Panache 的 Hibernate ORM 专注于实体在 Quarkus 中的使用。
 
-== First: an example
 
-What we're doing in Panache is to allow you to write your Hibernate ORM entities like this:
+
+//== First: an example
+== 首先一个简单的例子
+//What we're doing in Panache is to allow you to write your Hibernate ORM entities like this:
+在 Panache 中允许您这样编写 Hibernate ORM 实体：
 
 [source,java]
 ----
@@ -43,38 +49,56 @@ public class Person extends PanacheEntity {
 }
 ----
 
-You have noticed how much more compact and readable the code is?
-Does this look interesting? Read on!
+//You have noticed how much more compact and readable the code is?
+//Does this look interesting? Read on!
+您是否注意到代码更加紧凑和可读，这看起来有趣吗？请继续阅读。
 
-NOTE: the `list()` method might be surprising at first. It takes fragments of HQL (JP-QL) queries and contextualizes the rest. That makes for very concise but yet readable code.
+//NOTE: the `list()` method might be surprising at first. It takes fragments of HQL (JP-QL) queries and contextualizes the rest. That makes for very concise but yet readable code.
+NOTE: `list()` 方法起初可能有些令人惊讶，它采用 HQL(JP-QL) 查询片段作为参数将其他内容上下文化，这使得代码非常简洁，但不丢失可读性。
 
-NOTE: what was described above is essentially the link:https://www.martinfowler.com/eaaCatalog/activeRecord.html[active record pattern], sometimes just called the entity pattern.
-Hibernate with Panache also allows for the use of the more classical link:https://martinfowler.com/eaaCatalog/repository.html[repository pattern] via `PanacheRepository`.
-
-== Solution
-
-We recommend that you follow the instructions in the next sections and create the application step by step.
-However, you can go right to the completed example.
-
-Clone the Git repository: `git clone {quickstarts-clone-url}`, or download an {quickstarts-archive-url}[archive].
-
-The solution is located in the `hibernate-orm-panache-quickstart` {quickstarts-tree-url}/hibernate-orm-panache-quickstart[directory].
+//NOTE: what was described above is essentially the link:https://www.martinfowler.com/eaaCatalog/activeRecord.html[active record pattern], sometimes just called the entity pattern.
+//Hibernate with Panache also allows for the use of the more classical link:https://martinfowler.com/eaaCatalog/repository.html[repository pattern] via `PanacheRepository`.
+NOTE: 上面描述的本质是 link:https://www.martinfowler.com/eaaCatalog/activeRecord.html[活动记录模式] ，有时也称之为实体模式。 Hibernate ORM 和 Panache 也允许  link:https://martinfowler.com/eaaCatalog/repository.html[仓库模式]
 
 
-== Setting up and configuring Hibernate ORM with Panache
+//== Solution
+== 源码获取
 
-To get started:
+//We recommend that you follow the instructions in the next sections and create the application step by step.
+//However, you can go right to the completed example.
+我们建议您按照本教程的说明一步一步完成应用程序的制作。但是，您可以直接跳转到完整实例。
 
-* add your settings in `{config-file}`
-* annotate your entities with `@Entity`
-* make your entities extend `PanacheEntity` (optional if you are using the repository pattern)
+//Clone the Git repository: `git clone {quickstarts-clone-url}`, or download an {quickstarts-archive-url}[archive].
+克隆 git 仓库：`git clone {quickstarts-clone-url}` 或者下载  {quickstarts-archive-url}[源码].
 
-Follow the xref:hibernate-orm.adoc#setting-up-and-configuring-hibernate-orm[Hibernate set-up guide for all configuration].
+//The solution is located in the `hibernate-orm-panache-quickstart` {quickstarts-tree-url}/hibernate-orm-panache-quickstart[directory].
 
-In your build file, add the following dependencies:
+本教程源码位于 {quickstarts-tree-url}/hibernate-orm-panache-quickstart[地址].
 
-* the Hibernate ORM with Panache extension
-* your JDBC driver extension (`quarkus-jdbc-postgresql`, `quarkus-jdbc-h2`, `quarkus-jdbc-mariadb`, ...)
+
+//== Setting up and configuring Hibernate ORM with Panache
+== 配置 Hibernate ORM 和 Panache
+
+//To get started:
+执行顺序：
+
+//* add your settings in `{config-file}`
+* 将您的配置添加到 `{config-file}` 。
+//* annotate your entities with `@Entity`
+* 使用 `@Entity` 注解标记实体
+//* make your entities extend `PanacheEntity` (optional if you are using the repository pattern)
+* 让实体继承 `PanacheEntity` (可选项，如果您想要使用仓库模式)
+
+//Follow the xref:hibernate-orm.adoc#setting-up-and-configuring-hibernate-orm[Hibernate set-up guide for all configuration].
+按照 xref:hibernate-orm-CN.adoc#setting-up-and-configuring-hibernate-orm[Hibernate 配置教程]
+
+//In your build file, add the following dependencies:
+在您的项目中依赖项如下：
+
+//* the Hibernate ORM with Panache extension
+* Hibernate ORM 和 Panache 扩展
+//* your JDBC driver extension (`quarkus-jdbc-postgresql`, `quarkus-jdbc-h2`, `quarkus-jdbc-mariadb`, ...)
+* JDBC 驱动拓展 (`quarkus-jdbc-postgresql`, `quarkus-jdbc-h2`, `quarkus-jdbc-mariadb`, ...)
 
 [source,xml,role="primary asciidoc-tabs-target-sync-cli asciidoc-tabs-target-sync-maven"]
 .pom.xml
@@ -102,7 +126,8 @@ implementation("io.quarkus:quarkus-hibernate-orm-panache")
 implementation("io.quarkus:quarkus-jdbc-postgresql")
 ----
 
-Then add the relevant configuration properties in `{config-file}`.
+//Then add the relevant configuration properties in `{config-file}`.
+然后在 `{config-file}` 文件中添加配置信息：
 
 [source,properties]
 ----
@@ -116,12 +141,15 @@ quarkus.datasource.jdbc.url = jdbc:postgresql://localhost:5432/mydatabase
 quarkus.hibernate-orm.database.generation = drop-and-create
 ----
 
-== Solution 1: using the active record pattern
+//== Solution 1: using the active record
+== 方案1: 使用活动记录模式
 
-=== Defining your entity
+//=== Defining your entity
+=== 定义你的实体
 
-To define a Panache entity, simply extend `PanacheEntity`, annotate it with `@Entity` and add your
-columns as public fields:
+//To define a Panache entity, simply extend `PanacheEntity`, annotate it with `@Entity` and add your
+//columns as public fields:
+首先需要定义 Panache 实体，这样的实体只需要继承 `PanacheEntity` , 使用注解 `@Entity` 标记并且添加属性字段。
 
 [source,java]
 ----
@@ -133,8 +161,10 @@ public class Person extends PanacheEntity {
 }
 ----
 
-You can put all your JPA column annotations on the public fields. If you need a field to not be persisted, use the
-`@Transient` annotation on it. If you need to write accessors, you can:
+//You can put all your JPA column annotations on the public fields. If you need a field to not be persisted, use the
+//`@Transient` annotation on it. If you need to write accessors, you can:
+
+您可以将所有 JPA 注解放在字段上。如果宁想要忽略某些字段可以使用 `@Transient` 注解
 
 [source,java]
 ----
@@ -156,68 +186,73 @@ public class Person extends PanacheEntity {
 }
 ----
 
-And thanks to our field access rewrite, when your users read `person.name` they will actually call your `getName()` accessor,
-and similarly for field writes and the setter.
-This allows for proper encapsulation at runtime as all fields calls will be replaced by the corresponding getter/setter calls.
+//And thanks to our field access rewrite, when your users read `person.name` they will actually call your `getName()` accessor,
+//and similarly for field writes and the setter.
+//This allows for proper encapsulation at runtime as all fields calls will be replaced by the corresponding getter/setter calls.
 
-=== Most useful operations
+由于我们对访问字段进行了自定义处理，当您的用户在获取 `person.name` 属性时会调用 `getName` ，对于数据字段的写入也进行了重写相关操作都会执行具体的set方法。在 Hibernate ORM 中允许您对 get/set 方法进行适当的封装。
 
-Once you have written your entity, here are the most common operations you will be able to perform:
+//=== Most useful operations
+=== 有用的操作
+
+//Once you have written your entity, here are the most common operations you will be able to perform:
+在编写实体后，您可以执行一下常见操作
 
 [source,java]
 ----
-// creating a person
+// 创建 Person 对象
 Person person = new Person();
 person.name = "Stef";
 person.birth = LocalDate.of(1910, Month.FEBRUARY, 1);
 person.status = Status.Alive;
 
-// persist it
+// 持久化
 person.persist();
 
-// note that once persisted, you don't need to explicitly save your entity: all
-// modifications are automatically persisted on transaction commit.
+// 注意，一旦持久化，您无需显式保存实体：所有修改都会在事务提交时自动持久化。
 
-// check if it's persistent
+
+// 检查是否持久化
 if(person.isPersistent()){
-    // delete it
+    // 删除数据
     person.delete();
 }
 
-// getting a list of all Person entities
+// 获取所有 Person
 List<Person> allPersons = Person.listAll();
 
-// finding a specific person by ID
+// 根据id查询 Person
 person = Person.findById(personId);
 
-// finding a specific person by ID via an Optional
+// 进行可能存在的查询，在查询结果不存在时抛出异常
 Optional<Person> optional = Person.findByIdOptional(personId);
 person = optional.orElseThrow(() -> new NotFoundException());
 
-// finding all living persons
+// 查询 status 为 Status.Alive 的 Person
 List<Person> livingPersons = Person.list("status", Status.Alive);
 
-// counting all persons
+// 求 Person 数量
 long countAll = Person.count();
 
-// counting all living persons
+// 统计 status 为 Status.Alive 的数量
 long countAlive = Person.count("status", Status.Alive);
 
-// delete all living persons
+// 删除 status 为 Status.Alive 的数量
 Person.delete("status", Status.Alive);
 
-// delete all persons
+// 删除所有
 Person.deleteAll();
 
-// delete by id
+// 根据 id 删除
 boolean deleted = Person.deleteById(personId);
 
-// set the name of all living persons to 'Mortal'
+// 更新数据
 Person.update("name = 'Mortal' where status = ?1", Status.Alive);
 
 ----
 
-All `list` methods have equivalent `stream` versions.
+//All `list` methods have equivalent `stream` versions.
+所有 `list` 方法都有等价的 `stream` 版本的方法
 
 [source,java]
 ----
@@ -229,15 +264,19 @@ try (Stream<Person> persons = Person.streamAll()) {
 }
 ----
 
-NOTE: The `stream` methods require a transaction to work. +
-As they perform I/O operations, they should be closed via the `close()` method or via a try-with-resource to close the underlying `ResultSet`.
-If not, you will see warnings from Agroal that will close the underlying `ResultSet` for you.
+//NOTE: The `stream` methods require a transaction to work. +
+//As they perform I/O operations, they should be closed via the `close()` method or via a try-with-resource to close the underlying `ResultSet`.
+//If not, you will see warnings from Agroal that will close the underlying `ResultSet` for you.
+NOTE: 这些 `stream` 需要一个事务对象才能够工作。当它执行 I/O 操作时，他们应该通过 `close` 方法或者通过 try-with-resource 来关闭底层的 `ResultSet` 对象。如果没有，您将看到来自 Agroal 的经过，该警告将希望您关闭 `ResultSet` 对象。
 
-=== Adding entity methods
+//=== Adding entity methods
+=== 添加实体方法
 
 Add custom queries on your entities inside the entities themselves.
 That way, you and your co-workers can find them easily, and queries are co-located with the object they operate on.
 Adding them as static methods in your entity class is the Panache Active Record way.
+
+在实体内部允许添加自定义方法完成自定义查询操作。这样，您和您的同时可以轻松找到他们，并且查询与操作对象位于同一个位置，将它们作为静态方法添加到实体类中这样的方式我们称之为 Panache Active Record。
 
 [source,java]
 ----
@@ -261,12 +300,15 @@ public class Person extends PanacheEntity {
 }
 ----
 
-== Solution 2: using the repository pattern
+//== Solution 2: using the repository pattern
+== 方案2: 使用仓库模式
 
 
-=== Defining your entity
+//=== Defining your entity'
+=== 定义您的实体
 
-When using the repository pattern, you can define your entities as regular JPA entities.
+//When using the repository pattern, you can define your entities as regular JPA entities.
+使用仓库模式时，您可以将实体定义为常规的 JPA 实体。
 
 [source,java]
 ----
@@ -304,13 +346,18 @@ public class Person {
 }
 ----
 
-TIP: If you don't want to bother defining getters/setters for your entities, you can make them extend `PanacheEntityBase` and
-Quarkus will generate them for you. You can even extend `PanacheEntity` and take advantage of the default ID it provides.
+//TIP: If you don't want to bother defining getters/setters for your entities, you can make them extend `PanacheEntityBase` and
+//Quarkus will generate them for you. You can even extend `PanacheEntity` and take advantage of the default ID it provides.
+TIP: 如果您不想飞行的为实体定义 getters/setters 您可以继承 `PanacheEntityBase` ，Quarkus 将为您生成它们，您甚至可以继承 `PanacheEntity` 使用它来提供默认的ID。
 
-=== Defining your repository
 
-When using Repositories, you get the exact same convenient methods as with the active record pattern, injected in your Repository,
-by making them implements `PanacheRepository`:
+//=== Defining your repository
+=== 定义您的仓库
+
+//When using Repositories, you get the exact same convenient methods as with the active record pattern, injected in your Repository,
+//by making them implements `PanacheRepository`:
+
+使用 Repositories 时，您可以获得与活动记录模式完全相同的便捷方法，通过实现 `PanacheRepository` 接口来获取方法
 
 [source,java]
 ----
@@ -333,8 +380,10 @@ public class PersonRepository implements PanacheRepository<Person> {
 }
 ----
 
-All the operations that are defined on `PanacheEntityBase` are available on your repository, so using it
-is exactly the same as using the active record pattern, except you need to inject it:
+//All the operations that are defined on `PanacheEntityBase` are available on your repository, so using it
+//is exactly the same as using the active record pattern, except you need to inject it:
+
+常规操作都在 `PanacheEntityBase` 类中有相关标记，因此使用它与活动记录模式相同，除了您需要注入它
 
 [source,java]
 ----
@@ -347,64 +396,66 @@ public long count(){
 }
 ----
 
-=== Most useful operations
+//=== Most useful operations
+=== 有用的操作
 
-Once you have written your repository, here are the most common operations you will be able to perform:
+//Once you have written your repository, here are the most common operations you will be able to perform:
+编写完成仓库后，您可以执行一下常见操作：
 
 [source,java]
 ----
-// creating a person
+// 创建 Person 对象
 Person person = new Person();
 person.setName("Stef");
 person.setBirth(LocalDate.of(1910, Month.FEBRUARY, 1));
 person.setStatus(Status.Alive);
 
-// persist it
+// 持久化 Person 对象
 personRepository.persist(person);
 
-// note that once persisted, you don't need to explicitly save your entity: all
-// modifications are automatically persisted on transaction commit.
+// 注意，一旦持久化，您无需显式保存实体：所有修改都会在事务提交时自动持久化。
 
-// check if it's persistent
+// 检查是否持久化
 if(personRepository.isPersistent(person)){
-    // delete it
+    // 删除数据
     personRepository.delete(person);
 }
 
-// getting a list of all Person entities
+// 获取所有 Person
 List<Person> allPersons = personRepository.listAll();
 
-// finding a specific person by ID
+// 根据id查询 Person
 person = personRepository.findById(personId);
 
-// finding a specific person by ID via an Optional
+// 进行可能存在的查询，在查询结果不存在时抛出异常
 Optional<Person> optional = personRepository.findByIdOptional(personId);
 person = optional.orElseThrow(() -> new NotFoundException());
 
-// finding all living persons
+// 查询 status 为 Status.Alive 的 Person
 List<Person> livingPersons = personRepository.list("status", Status.Alive);
 
-// counting all persons
+// 求 Person 数量
 long countAll = personRepository.count();
 
-// counting all living persons
+// 统计 status 为 Status.Alive 的数量
 long countAlive = personRepository.count("status", Status.Alive);
 
-// delete all living persons
+// 删除 status 为 Status.Alive 的数量
 personRepository.delete("status", Status.Alive);
 
-// delete all persons
+// 删除所有
 personRepository.deleteAll();
 
-// delete by id
+// 根据 id 删除
 boolean deleted = personRepository.deleteById(personId);
 
-// set the name of all living persons to 'Mortal'
+// 更新数据
 personRepository.update("name = 'Mortal' where status = ?1", Status.Alive);
 
 ----
 
-All `list` methods have equivalent `stream` versions.
+//All `list` methods have equivalent `stream` versions.
+所有 `list` 方法都有等价的 `stream` 版本的方法
 
 [source,java]
 ----
@@ -415,17 +466,23 @@ List<String> namesButEmmanuels = persons
     .collect(Collectors.toList());
 ----
 
-NOTE: The `stream` methods require a transaction to work.
+//NOTE: The `stream` methods require a transaction to work.
+NOTE: 这些 `stream` 需要一个事务对象才能够工作。
 
-NOTE: The rest of the documentation show usages based on the active record pattern only,
-but keep in mind that they can be performed with the repository pattern as well.
-The repository pattern examples have been omitted for brevity.
+//NOTE: The rest of the documentation show usages based on the active record pattern only,
+//but keep in mind that they can be performed with the repository pattern as well.
+//The repository pattern examples have been omitted for brevity.
 
-== Writing a JAX-RS resource
+NOTE: 文档的其他部分仅演示基于活动记录模式的用法，注意，他们也可以使用仓库模式执行。为了简洁期间，省略了仓库模式相关的代码。
 
-First, include one of the RESTEasy extensions to enable JAX-RS endpoints, for example, add the `io.quarkus:quarkus-resteasy-jackson` dependency for JAX-RS and JSON support.
+//== Writing a JAX-RS resource
+== 编写 JAX-RS 资源
 
-Then, you can create the following resource to create/read/update/delete your Person entity:
+//First, include one of the RESTEasy extensions to enable JAX-RS endpoints, for example, add the `io.quarkus:quarkus-resteasy-jackson` dependency for JAX-RS and JSON support.
+首先，需要引入 RESTEasy 拓展以启动 JAX-RS 端点，例如，添加 `io.quarkus:quarkus-resteasy-jackson` 依赖项，该依赖项支持 JAX-RS 和 JSON 。
+
+//Then, you can create the following resource to create/read/update/delete your Person entity:
+然后，您可以创建资源对象，用于新增、读取、更新和删除 Person 实体：
 
 [source,java]
 ----
@@ -492,83 +549,97 @@ public class PersonResource {
 }
 ----
 
-NOTE: Be careful to use the `@Transactional` annotation on the operations that modify the database,
-you can add the annotation at the class level for simplicity purpose.
+//NOTE: Be careful to use the `@Transactional` annotation on the operations that modify the database,
+//you can add the annotation at the class level for simplicity purpose.
 
-== Advanced Query
+NOTE: 注意 `@Transactional` 需要在修改数据库操作上使用注解，为了简单期间，您可以在类级别添加该注解。
 
-=== Paging
+//== Advanced Query
+== 高级查询
 
-You should only use `list` and `stream` methods if your table contains small enough data sets. For larger data
-sets you can use the `find` method equivalents, which return a `PanacheQuery` on which you can do paging:
+//=== Paging
+=== 查询
+
+//You should only use `list` and `stream` methods if your table contains small enough data sets. For larger data
+//sets you can use the `find` method equivalents, which return a `PanacheQuery` on which you can do paging:
+如果您的数据表数量足够小，您应该使用 `list` 和 `stream` 相关方法。 `stream` 对于较大数据集，您可以使用 `find` 等方法，它返回一个 `PanacheQuery` 对象，您可以在其纸上使用分页方法：
 
 [source,java]
 ----
-// create a query for all living persons
+// 创建一个分页查询
 PanacheQuery<Person> livingPersons = Person.find("status", Status.Alive);
 
-// make it use pages of 25 entries at a time
+// 分页数量为 25
 livingPersons.page(Page.ofSize(25));
 
-// get the first page
+// 获取数量
 List<Person> firstPage = livingPersons.list();
 
-// get the second page
+// 获取第二页
 List<Person> secondPage = livingPersons.nextPage().list();
 
-// get page 7
+// 获取第7页
 List<Person> page7 = livingPersons.page(Page.of(7, 25)).list();
 
-// get the number of pages
+// 获取总量
 int numberOfPages = livingPersons.pageCount();
 
-// get the total number of entities returned by this query without paging
+// 获取总量
 long count = livingPersons.count();
 
-// and you can chain methods of course
+// 链式调用
 return Person.find("status", Status.Alive)
     .page(Page.ofSize(25))
     .nextPage()
     .stream()
 ----
 
-The `PanacheQuery` type has many other methods to deal with paging and returning streams.
+//The `PanacheQuery` type has many other methods to deal with paging and returning streams.
+`PanacheQuery` 类型有许多其他方法来处理分页和返回流。
 
-=== Using a range instead of pages
+//=== Using a range instead of pages
+=== 使用范围查询
 
 `PanacheQuery` also allows range-based queries.
 
+`PanacheQuery` 允许基于范围查询
+
 [source,java]
 ----
-// create a query for all living persons
+// 创建查询
 PanacheQuery<Person> livingPersons = Person.find("status", Status.Alive);
 
-// make it use a range: start at index 0 until index 24 (inclusive).
+// 让它使用一个范围：从索引 0 开始直到索引 24（包括）
 livingPersons.range(0, 24);
 
-// get the range
+// 获取范围内的数据
 List<Person> firstRange = livingPersons.list();
 
-// to get the next range, you need to call range again
+// 要获得下一个范围，您需要再次调用范围
 List<Person> secondRange = livingPersons.range(25, 49).list();
 ----
 
 [WARNING]
 ====
-You cannot mix ranges and pages: if you use a range, all methods that depend on having a current page will throw an `UnsupportedOperationException`;
-you can switch back to paging using `page(Page)` or `page(int, int)`.
+//You cannot mix ranges and pages: if you use a range, all methods that depend on having a current page will throw an `UnsupportedOperationException`;
+//you can switch back to paging using `page(Page)` or `page(int, int)`.
+
+您不能够混合使用 range 和 page ，如果您使用了 range 并且依赖 page 会抛出 `UnsupportedOperationException` 异常，如果出现该异常建议切换回 page。
 ====
 
-=== Sorting
+//=== Sorting
+=== 排序
 
-All methods accepting a query string also accept the following simplified query form:
+//All methods accepting a query string also accept the following simplified query form:
+所有查询都接收以字符串的心声进行排序查询：
 
 [source,java]
 ----
 List<Person> persons = Person.list("order by name,birth");
 ----
 
-But these methods also accept an optional `Sort` parameter, which allows your to abstract your sorting:
+//But these methods also accept an optional `Sort` parameter, which allows your to abstract your sorting:
+这些方法也接受一个可选的 `Sort` 参数，它允许您抽象排序
 
 [source,java]
 ----
@@ -578,9 +649,11 @@ List<Person> persons = Person.list(Sort.by("name").and("birth"));
 List<Person> persons = Person.list("status", Sort.by("name").and("birth"), Status.Alive);
 ----
 
-The `Sort` class has plenty of methods for adding columns and specifying sort direction.
+//The `Sort` class has plenty of methods for adding columns and specifying sort direction.
+`Sort` 有很多用于添加列或者指定排序方向的方法。
 
-=== Simplified queries
+//=== Simplified queries
+=== 简化查询
 
 Normally, HQL queries are of this form: `from EntityName [where ...] [order by ...]`, with optional elements
 at the end.

@@ -5,93 +5,132 @@ https://github.com/quarkusio/quarkus/tree/main/docs/src/main/asciidoc
 ////
 //= Getting Started With Reactive
 = 响应式入门指南
+
 include::./attributes.adoc[]
 
-_Reactive_ is a set of principles to build robust, efficient, and concurrent applications and systems.
-These principles let you handle more load than traditional approaches while using the resources (CPU and memory) more efficiently while also reacting to failures gracefully.
+//_Reactive_ is a set of principles to build robust, efficient, and concurrent applications and systems.
+//These principles let you handle more load than traditional approaches while using the resources (CPU and memory) more efficiently while also reacting to failures gracefully.
 
-Quarkus is a _Reactive_ framework.
-Since the beginning, _Reactive_ has been an essential tenet of the Quarkus architecture.
-It includes many reactive features and offers a broad ecosystem.
+_Reactive_ 是一种用于构建强壮、高效和高并发系统的方式。使用 Reactive 使您可以处理比传统方式更多的数据，同时更加高效的使用资源（CPU和内存），同时还能对故障做出优雅的反应。
 
-This guide is not an in-depth article about what _Reactive_ is and how Quarkus enables reactive architectures.
-If you want to read more about these topics, refer to the xref:quarkus-reactive-architecture.adoc[Reactive Architecture guide], which provides an overview of the Quarkus reactive ecosystem.
+//Quarkus is a _Reactive_ framework.
+Quarkus 是一个响应式框架( Reactive 框架)。
+//Since the beginning, _Reactive_ has been an essential tenet of the Quarkus architecture.
+//It includes many reactive features and offers a broad ecosystem.
+从一开始，响应式一直是 Quarkus 框架的设计原则，它包括许多响应式功能并提供充足的生态系统。
 
-In this guide, we will get you started with some reactive features of Quarkus.
-We are going to implement a simple CRUD application.
-Yet, unlike in the xref:hibernate-orm-panache.adoc[Hibernate with Panache guide], it uses the reactive features of Quarkus.
+//This guide is not an in-depth article about what _Reactive_ is and how Quarkus enables reactive architectures.
+//If you want to read more about these topics, refer to the xref:quarkus-reactive-architecture.adoc[Reactive Architecture guide], which provides an overview of the Quarkus reactive ecosystem.
+本教程不是一片关于什么是响应式以及Quarkus如何启用响应式架构的深入文章。如果您想了解有关这些主题的信息可以查看  xref:quarkus-reactive-architecture-CN.adoc[响应式架构指南] ，其中介绍了 Quarkus 响应式生态的相关内容。
 
-This guide will help you with:
+//In this guide, we will get you started with some reactive features of Quarkus.
+//We are going to implement a simple CRUD application.
+//Yet, unlike in the xref:hibernate-orm-panache.adoc[Hibernate with Panache guide], it uses the reactive features of Quarkus.
 
-* Bootstrapping a reactive CRUD application with Quarkus
-* Using Hibernate Reactive with Panache to interact with a database in a reactive fashion
-* Using RESTEasy Reactive to implement HTTP API while enforcing the reactive principle
-* Packaging and Running the application
+在本教程中，我们将帮助您开始使用 Quarkus 中的响应式功能，我们将实现一个简单的 CRUD 程序 ，本教程与 xref:hibernate-orm-panache-CN.adoc[Hibernate 和 Panache 教程] 不同，本教程着重在响应式特性的使用教学。
 
-== Prerequisites
+//This guide will help you with:
+本教程包含如下内容：
 
-include::includes/devtools/prerequisites.adoc[]
+//* Bootstrapping a reactive CRUD application with Quarkus
+* 使用 quarkus 编写响应式相关的 CRUD 应用程序。
+//* Using Hibernate Reactive with Panache to interact with a database in a reactive fashion
+* 使用 Hibernate Reactive 和 Panache 以响应式的方式进行数据库交互。
+//* Using RESTEasy Reactive to implement HTTP API while enforcing the reactive principle
+* 使用 RESTEasy Reactive 实现 HTTP API 。
+//* Packaging and Running the application
+* 打包和运行应用程序。
 
-NOTE: Verify that Maven is using the Java version you expect.
-If you have multiple JDKs installed, make sure Maven is using the expected one.
-You can verify which JDK Maven uses by running `mvn --version.`
+//== Prerequisites
+== 前提
 
-== Imperative vs. Reactive: a question of threads
+include::includes/devtools/prerequisites-CN.adoc[]
 
-As mentioned above, in this guide, we are going to implement a reactive CRUD application.
-But you may wonder what the differences and benefits are in comparison to the traditional and imperative model.
+//NOTE: Verify that Maven is using the Java version you expect.
+//If you have multiple JDKs installed, make sure Maven is using the expected one.
+//You can verify which JDK Maven uses by running `mvn --version.`
 
-To better understand the contrast, we need to explain the difference between the reactive and imperative execution models.
-It's essential to comprehend that _Reactive_ is not just a different execution model, but that distinction is necessary to understand this guide.
+NOTE: 验证 Maven 使用的是您期望的 Java 版本。如果宁安装了多个JDK，请确保Maven使用的是您期望的那个。您可以通过运行 `mvn --version` 来查看当前Maven所使用的JDK版本
 
-In the traditional and imperative approach, frameworks assign a thread to handle the request.
-So, the whole processing of the request runs on this worker thread.
-This model does not scale very well.
-Indeed, to handle multiple concurrent requests, you need multiple threads; and so your application concurrency is constrained by the number of threads.
-In addition, these threads are blocked as soon as your code interacts with remote services.
-So, it leads to inefficient usage of the resources, as you may need more threads, and each thread, as they are mapped to OS threads, has a cost in terms of memory and CPU.
+//== Imperative vs. Reactive: a question of threads
+== 命令式对比响应式：线程相关
 
-image::blocking-threads.png[alt=Imperative Execution Model and Worker Threads, width=50%, align=center]
-
-On the other side, the reactive model relies on non-blocking I/Os and a different execution model.
-Non-blocking I/O provides an efficient way to deal with concurrent I/O.
-A minimal amount of threads called I/O threads, can handle many concurrent I/O.
-With such a model, request processing is not delegated to a worker thread but uses these I/O threads directly.It saves memory and CPU as there is no need to create worker threads to handle the requests.
-It also improves the concurrency as it removes the constraint on the number of threads.
-Finally, it also improves response time as it reduces the number of thread switches.
-
-image::reactive-thread.png[alt=Reactive Execution Model and I/O Threads, width=50%, align=center]
+//As mentioned above, in this guide, we are going to implement a reactive CRUD application.
+//But you may wonder what the differences and benefits are in comparison to the traditional and imperative model.
+如上所述，在本教程中我们将实现一个反应式 CRUD 应用程序。但是您可能想知道响应式与命令式相比有什么区别和好处。
 
 
-== From sequential to continuation style
 
-So, with the reactive execution model, the requests are processed using I/O threads.
-But that's not all.
-An I/O thread can handle multiple concurrent requests.
-How? Here is the trick and one of the most significant differences between reactive and imperative.
+//To better understand the contrast, we need to explain the difference between the reactive and imperative execution models.
+为了更好的理解和对比，我们需要解释响应式和命令式执行模型之间区别。
 
-When processing a request requires interacting with a remote service, like an HTTP API or a database, it does not block the execution while waiting for the response.
-Instead, it schedules the I/O operation and attaches a continuation, i.e., the request processing remaining code.
-This continuation can be passed as a callback (a function invoked with the I/O outcome), or use more advanced constructs such as reactive programming or co-routines.
-Regardless of how the continuation is expressed, the essential aspect is the release of the I/O thread and, as a consequence, the fact that this thread can be used to process another request.
-When the scheduled I/O completes, the I/O thread executes the continuation, and the processing of the pending request continues.
+//It's essential to comprehend that _Reactive_ is not just a different execution model, but that distinction is necessary to understand this guide.
 
-So, unlike the imperative model, where I/O blocks the execution, reactive switches to a continuation-based design, where the I/O threads are released, and continuation invoked when the I/Os complete.
-As a result, the I/O thread can handle multiple concurrent requests, improving the overall concurrency of the application.
+//In the traditional and imperative approach, frameworks assign a thread to handle the request.
+//So, the whole processing of the request runs on this worker thread.
+//This model does not scale very well.
+//Indeed, to handle multiple concurrent requests, you need multiple threads; and so your application concurrency is constrained by the number of threads.
+//In addition, these threads are blocked as soon as your code interacts with remote services.
+//So, it leads to inefficient usage of the resources, as you may need more threads, and each thread, as they are mapped to OS threads, has a cost in terms of memory and CPU.
 
-But, there is a catch.
-We need a way to write continuation-passing code.
-There are many ways of doing this.
-In Quarkus, we propose:
+在命令式方法中，框架分配一个线程来处理请求。因此，请求的整个处理工作都在这个线程上执行。这个模型不能很好的扩展。如果需要处理多个并发请求，您将需要多个线程，因此您的应用程序并发性能收到线程数量的限制。 此外，一旦您的代码与远程服务交互，这些线程将会被阻塞，因此它会导致资源的低效使用，因为您需要更多的线程处理，并且每个线程都会映射到OS线程（操作系统线程），因此在内存和CPU方面都会增加成本。
 
-* Mutiny - an intuitive and event-driven reactive programming library
-* Kotlin co-routines - a way to write asynchronous code in a sequential manner
+image::blocking-threads.png[alt=Imperative Execution Model and Worker Threads,width=50%,align=center]
 
-In this guide, we will use Mutiny.
-To know more about Mutiny, check the xref:mutiny-primer.adoc[Mutiny documentation].
+//On the other side, the reactive model relies on non-blocking I/Os and a different execution model.
+//Non-blocking I/O provides an efficient way to deal with concurrent I/O.
+//A minimal amount of threads called I/O threads, can handle many concurrent I/O.
+//With such a model, request processing is not delegated to a worker thread but uses these I/O threads directly.It saves memory and CPU as there is no need to create worker threads to handle the requests.
+//It also improves the concurrency as it removes the constraint on the number of threads.
+//Finally, it also improves response time as it reduces the number of thread switches.
+响应式模型依赖于非阻塞I/O和不同的执行模型，非阻塞I/O提供了一种处理并发I/O更有效的方法，在响应式模型中会创建一个最少数量的I/O线程，用于处理I/O并发请求。使用这样的模型，请求处理不会委托给工作线程，而是直接使用这些I/O线程。它节省了内存和CPU，因为不需要创建工作线程来处理请求。他还提高了并发性，因为它消除了对线程数量的限制。最后，由于减少了线程切换的次数，它还提高了响应时间。
 
-NOTE: Project Loom is coming to the JDK soon and proposes a virtual thread-based model.
-The Quarkus architecture is ready to support Loom as soon as it's become globally available.
+image::reactive-thread.png[alt=Reactive Execution Model and I/O Threads,width=50%,align=center]
+
+
+//== From sequential to continuation style
+== 从 sequential 转换到 continuation 风格
+
+//So, with the reactive execution model, the requests are processed using I/O threads.
+//But that's not all.
+//An I/O thread can handle multiple concurrent requests.
+//How? Here is the trick and one of the most significant differences between reactive and imperative.
+对于响应式模型，请求是使用 I/O线程处理的，但这不是全部。一个I/O线程可以处理多个并发请求。这是与命令式之间最显著的差别。
+
+//When processing a request requires interacting with a remote service, like an HTTP API or a database, it does not block the execution while waiting for the response.
+//Instead, it schedules the I/O operation and attaches a continuation, i.e., the request processing remaining code.
+//This continuation can be passed as a callback (a function invoked with the I/O outcome), or use more advanced constructs such as reactive programming or co-routines.
+//Regardless of how the continuation is expressed, the essential aspect is the release of the I/O thread and, as a consequence, the fact that this thread can be used to process another request.
+//When the scheduled I/O completes, the I/O thread executes the continuation, and the processing of the pending request continues.
+
+档处理请求时需要与远程服务（如 HTTP API 或数据库）交互时，它不会阻塞等待。相反它调度 I/O操作并且附加一个延续（continuation）操作，即请求处理剩下的代码。这种延续操作可以作为回调（使用 I/O 结果调用的函数），或使用更高级的构造，例如响应式编程或协程。不管延续操作如何表达，重要的是释放I/O线程，因此该线程可以用于处理另一个请求。当调度的I/O完成时，I/O线程继执行，并且处理挂起的请求。
+
+
+//So, unlike the imperative model, where I/O blocks the execution, reactive switches to a continuation-based design, where the I/O threads are released, and continuation invoked when the I/Os complete.
+//As a result, the I/O thread can handle multiple concurrent requests, improving the overall concurrency of the application.
+
+所以，与I/O阻塞执行的命令式不同，响应式设计切换到了延续操作的设计，其中I/O线程被释放，并在I/O操作完成时执行延续操作。因此，I/O线程可以处理多个并发请求，从而提高应用程序的整体并发性。
+
+
+//But, there is a catch.
+//We need a way to write continuation-passing code.
+//There are many ways of doing this.
+//In Quarkus, we propose:
+但是有一个问题，我们需要编写一种传递延续操作的代码，有很多方法可以做到这一点，在 Quarkus 中我们建议您使用下面工具
+
+
+//* Mutiny - an intuitive and event-driven reactive programming library
+* Mutiny - 一个直观且基于事件驱动的响应式编程库。
+//* Kotlin co-routines - a way to write asynchronous code in a sequential manner
+* Kotlin co-routines - 一种以顺序方式编写延续操作的编程库。
+
+//In this guide, we will use Mutiny.
+//To know more about Mutiny, check the xref:mutiny-primer.adoc[Mutiny documentation].
+在本教程中将使用 Mutiny ，想要了解更多关于 Mutiny 的信息可以查看  xref:mutiny-primer-CN.adoc[Mutiny 文档].
+
+//NOTE: Project Loom is coming to the JDK soon and proposes a virtual thread-based model.
+//The Quarkus architecture is ready to support Loom as soon as it's become globally available.
+NOTE:  JDK 将支持 Project Loom ，并提出基于虚拟线程的模型，一旦可用， Quarkus 将准备支持 Project Loom 。
 
 == Bootstrapping the Reactive Fruits application
 
@@ -116,7 +155,7 @@ Once selected, click on "Generate your application", download the zip file, unzi
 
 Let's start with the `Fruit` entity.Create the `src/main/java/org/acme/hibernate/orm/panache/Fruit.java` file with the following content:
 
-[source, java]
+[source,java]
 ----
 package org.acme.hibernate.orm.panache;
 
@@ -135,6 +174,7 @@ public class Fruit extends PanacheEntity {
 
 }
 ----
+
 <1> Make sure you import the reactive variant of `PanacheEntity`.
 
 This class represents `Fruits`.
@@ -147,7 +187,7 @@ We will use this API to implement the REST endpoint.
 
 Before going further, open the `src/main/resource/application.properties` file and add:
 
-[source, properties]
+[source,properties]
 ----
 quarkus.datasource.db-kind=postgresql
 quarkus.hibernate-orm.database.generation=drop-and-create
@@ -157,7 +197,7 @@ It instructs the application to use PostgreSQL for the database and to handle th
 
 In the same directory, create an `import.sql` file, which inserts a few fruits, so we don't start with an empty database in dev mode:
 
-[source, text]
+[source,text]
 ----
 INSERT INTO fruit(id, name) VALUES (nextval('hibernate_sequence'), 'Cherry');
 INSERT INTO fruit(id, name) VALUES (nextval('hibernate_sequence'), 'Apple');
@@ -165,8 +205,8 @@ INSERT INTO fruit(id, name) VALUES (nextval('hibernate_sequence'), 'Banana');
 ----
 
 In a terminal, launch the application in dev mode using: `./mvnw quarkus:dev`.
-Quarkus automatically starts a database instance for you and configure the application. Now we only need to implement the HTTP endpoint.
-
+Quarkus automatically starts a database instance for you and configure the application.
+Now we only need to implement the HTTP endpoint.
 
 == Reactive Resource
 
@@ -177,7 +217,7 @@ Also, our Fruit Panache entity exposes methods using these types, so we only nee
 
 Create the `src/main/java/org/acme/hibernate/orm/panache/FruitResource.java` file with the following content:
 
-[source, java]
+[source,java]
 ----
 package org.acme.hibernate.orm.panache;
 
@@ -191,10 +231,11 @@ public class FruitResource {
 }
 ----
 
-Let's start with the `getAll` method. The `getAll` method returns all the fruits stored in the database.
+Let's start with the `getAll` method.
+The `getAll` method returns all the fruits stored in the database.
 In the `FruitResource`, add the following code:
 
-[source, java]
+[source,java]
 ----
 @GET
 public Uni<List<Fruit>> get() {
@@ -204,7 +245,7 @@ public Uni<List<Fruit>> get() {
 
 Open http://localhost:8080/fruits to invoke this method:
 
-[source, json]
+[source,json]
 ----
 [{"id":2,"name":"Apple"},{"id":3,"name":"Banana"},{"id":1,"name":"Cherry"},{"id":4,"name":"peach"}]
 ----
@@ -231,7 +272,7 @@ If you have a large set of results, implement pagination.
 
 Let's continue our API with `getSingle`:
 
-[source, java]
+[source,java]
 ----
 @GET
 @Path("/{id}")
@@ -245,7 +286,7 @@ It returns a `Uni`, which will complete when the database has retrieved the row.
 
 The `create` method allows adding a new fruit to the database:
 
-[source, java]
+[source,java]
 ----
 @POST
 public Uni<Response> create(Fruit fruit) {
@@ -267,7 +308,7 @@ NOTE: The `.onItem().transform(...)` can be replaced with `.map(...)`.
 
 If you have https://curl.se/[curl] on your machine, you can try the endpoint using:
 
-[source, bash]
+[source,bash]
 ----
 > curl --header "Content-Type: application/json" \
   --request POST \
@@ -300,7 +341,7 @@ To run the application, don’t forget to start a database and provide the confi
 
 For example, you can use Docker to run your database:
 
-[source, bash]
+[source,bash]
 ----
 docker run -it --rm=true \
     --name postgres-quarkus -e POSTGRES_USER=quarkus \
@@ -310,7 +351,7 @@ docker run -it --rm=true \
 
 Then, launch the application using:
 
-[source, bash]
+[source,bash]
 ----
 java \
    -Dquarkus.datasource.reactive.url=postgresql://localhost/fruits \
@@ -321,8 +362,7 @@ java \
 
 Or, if you packaged your application as native executable, use:
 
-
-[source, bash]
+[source,bash]
 ----
 ./target/getting-started-with-reactive-runner \
   -Dquarkus.datasource.reactive.url=postgresql://localhost/fruits \

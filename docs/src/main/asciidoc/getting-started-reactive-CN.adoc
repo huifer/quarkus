@@ -132,13 +132,17 @@ image::reactive-thread.png[alt=Reactive Execution Model and I/O Threads,width=50
 //The Quarkus architecture is ready to support Loom as soon as it's become globally available.
 NOTE:  JDK 将支持 Project Loom ，并提出基于虚拟线程的模型，一旦可用， Quarkus 将准备支持 Project Loom 。
 
-== Bootstrapping the Reactive Fruits application
+//== Bootstrapping the Reactive Fruits application
+== 创建 Reactive Fruits  应用程序
 
-With this in mind, let's see how we can develop a CRUD application with Quarkus, which will use the I/O thread to handle the HTTP requests, interact with a database, process the result, and write the HTTP response; in other words: a reactive CRUD application.
+//With this in mind, let's see how we can develop a CRUD application with Quarkus, which will use the I/O thread to handle the HTTP requests, interact with a database, process the result, and write the HTTP response; in other words: a reactive CRUD application.
+接下来将介绍如何使用 Quarkus 开发一个 CRUD 应用程序，它将使用 I/O 线程来处理HTTP请求、处理数据库交互、处理结果。换句话说：使用 Quarkus 开发一个响应式的 CRUD 应用程序。
 
-While we recommend you to follow the step-by-step instructions, you can find the final solution on https://github.com/quarkusio/quarkus-quickstarts/tree/main/hibernate-reactive-panache-quickstart.
+//While we recommend you to follow the step-by-step instructions, you can find the final solution on https://github.com/quarkusio/quarkus-quickstarts/tree/main/hibernate-reactive-panache-quickstart.
+虽然我们建议您按照步骤说明一步步进行操作，但是您可以在 https://github.com/quarkusio/quarkus-quickstarts/tree/main/hibernate-reactive-panache-quickstart 上找到源代码。
 
-First, go to https://code.quarkus.io[code.quarkus.io] and select the following extensions:
+//First, go to https://code.quarkus.io[code.quarkus.io] and select the following extensions:
+首先，打开 https://code.quarkus.io[code.quarkus.io] 网站，并选择一下扩展：
 
 1. RESTEasy Reactive Jackson
 2. Hibernate Reactive with Panache
@@ -146,14 +150,19 @@ First, go to https://code.quarkus.io[code.quarkus.io] and select the following e
 
 image::reactive-guide-code.png[alt=Extensions to select in https://code.quarkus.io,width=90%,align=center]
 
-The last extension is the reactive database driver for PostgreSQL.
-Hibernate Reactive uses that driver to interact with the database without blocking the caller thread.
+//The last extension is the reactive database driver for PostgreSQL.
+//Hibernate Reactive uses that driver to interact with the database without blocking the caller thread.
+最后一个扩展式 PostgreSQL 的响应式数据库驱动程序。Hibernate Reactive 使用该驱动程序与数据库进行交互，不会阻塞调用者线程。
 
-Once selected, click on "Generate your application", download the zip file, unzip it and open the code in your favorite IDE.
 
-== Reactive Panache Entity
+//Once selected, click on "Generate your application", download the zip file, unzip it and open the code in your favorite IDE.
+选择拓展后，单击 Generate your application 按钮 ，下载 zip 文件，解压缩下载文件并且在您喜欢的 IDE 中打开代码。
+
+//== Reactive Panache Entity
+== 响应式下的 Panache 实体
 
 Let's start with the `Fruit` entity.Create the `src/main/java/org/acme/hibernate/orm/panache/Fruit.java` file with the following content:
+让我们从编写实体开始，创建 `Fruit` 实体，将其放在 `src/main/java/org/acme/hibernate/orm/panache/Fruit.java` 路径下，文件内容如下：
 
 [source,java]
 ----
@@ -175,17 +184,20 @@ public class Fruit extends PanacheEntity {
 }
 ----
 
-<1> Make sure you import the reactive variant of `PanacheEntity`.
+//<1> Make sure you import the reactive variant of `PanacheEntity`.
+<1> 确保导入 `PanacheEntity` 。
 
-This class represents `Fruits`.
-It's a straightforward entity with a single field (`name`).
-Note that it uses `io.quarkus.hibernate.reactive.panache.PanacheEntity`, the reactive variant of `PanacheEntity`.
-So, behind the scenes, Hibernate uses the execution model we described above.
-It interacts with the database without blocking the thread.
-In addition, this reactive `PanacheEntity` proposes a reactive API.
-We will use this API to implement the REST endpoint.
+//This class represents `Fruits`.
+//It's a straightforward entity with a single field (`name`).
+//Note that it uses `io.quarkus.hibernate.reactive.panache.PanacheEntity`, the reactive variant of `PanacheEntity`.
+//So, behind the scenes, Hibernate uses the execution model we described above.
+//It interacts with the database without blocking the thread.
+//In addition, this reactive `PanacheEntity` proposes a reactive API.
+//We will use this API to implement the REST endpoint.
+这个类代表 `Fruits` ，它是具有单个字段( `name` ) 的简单实体，请注意，它继承了 `io.quarkus.hibernate.reactive.panache.PanacheEntity` 类
 
-Before going further, open the `src/main/resource/application.properties` file and add:
+//Before going further, open the `src/main/resource/application.properties` file and add:
+在进行后续操作钱，打开 `src/main/resource/application.properties` 文件写入如下内容
 
 [source,properties]
 ----
@@ -193,9 +205,11 @@ quarkus.datasource.db-kind=postgresql
 quarkus.hibernate-orm.database.generation=drop-and-create
 ----
 
-It instructs the application to use PostgreSQL for the database and to handle the database schema generation.
+//It instructs the application to use PostgreSQL for the database and to handle the database schema generation.
+它表示应用程序将使用 PostgreSQL ，处理模式为删除创建。
 
-In the same directory, create an `import.sql` file, which inserts a few fruits, so we don't start with an empty database in dev mode:
+//In the same directory, create an `import.sql` file, which inserts a few fruits, so we don't start with an empty database in dev mode:
+在 ``src/main/resource` 目录下创建 `import.sql` 文件，向该文件添加sql语句，避免在开发模式下从一个空数据库开始，文件内容如下：
 
 [source,text]
 ----
@@ -204,18 +218,24 @@ INSERT INTO fruit(id, name) VALUES (nextval('hibernate_sequence'), 'Apple');
 INSERT INTO fruit(id, name) VALUES (nextval('hibernate_sequence'), 'Banana');
 ----
 
-In a terminal, launch the application in dev mode using: `./mvnw quarkus:dev`.
-Quarkus automatically starts a database instance for you and configure the application.
-Now we only need to implement the HTTP endpoint.
+//In a terminal, launch the application in dev mode using: `./mvnw quarkus:dev`.
+//Quarkus automatically starts a database instance for you and configure the application.
+//Now we only need to implement the HTTP endpoint.
 
-== Reactive Resource
+在终端中可以使用 `./mvnw quarkus:dev` 命令以开发模式启动应用程序，Quarkus 会自动为您连接数据库并创建数据。现在我们只需要实现 HTTP 端点。
 
-Because the interaction with the database is non-blocking and asynchronous, we need to use asynchronous constructs to implement our HTTP resource.
-Quarkus uses Mutiny as its central reactive programming model.
-So, it supports returning Mutiny types (`Uni` and `Multi`) from HTTP endpoints.
-Also, our Fruit Panache entity exposes methods using these types, so we only need to implement the _glue_.
+//== Reactive Resource
+== 响应式下的资源
 
-Create the `src/main/java/org/acme/hibernate/orm/panache/FruitResource.java` file with the following content:
+//Because the interaction with the database is non-blocking and asynchronous, we need to use asynchronous constructs to implement our HTTP resource.
+//Quarkus uses Mutiny as its central reactive programming model.
+//So, it supports returning Mutiny types (`Uni` and `Multi`) from HTTP endpoints.
+//Also, our Fruit Panache entity exposes methods using these types, so we only need to implement the _glue_.
+
+由于与数据库的交互是非阻塞和异步的，所以我们需要使用异步构造来实现我们的 HTTP 资源，Quarkus 使用 Mutiny 作为响应式编程模型。因此，它支持从 HTTP 端点返回 Mutiny类型（ `Mutiny` 和 `Uni` ），在 Fruit Panache 实体对象中提供了相关方法，下面只需要将方法调用即可实现 HTTP 端点。
+
+//Create the `src/main/java/org/acme/hibernate/orm/panache/FruitResource.java` file with the following content:
+创建 `src/main/java/org/acme/hibernate/orm/panache/FruitResource.java` 文件，内容如下：
 
 [source,java]
 ----
@@ -231,9 +251,11 @@ public class FruitResource {
 }
 ----
 
-Let's start with the `getAll` method.
-The `getAll` method returns all the fruits stored in the database.
-In the `FruitResource`, add the following code:
+//Let's start with the `getAll` method.
+//The `getAll` method returns all the fruits stored in the database.
+//In the `FruitResource`, add the following code:
+
+让我们从 `getAll` 方法开始， `getAll` 方法将返回存储在数据库 fruits 表中的所有数据，在 `FruitResource` 添加如下代码。
 
 [source,java]
 ----
@@ -243,34 +265,43 @@ public Uni<List<Fruit>> get() {
 }
 ----
 
-Open http://localhost:8080/fruits to invoke this method:
+//Open http://localhost:8080/fruits to invoke this method:
+
+访问 http://localhost:8080/fruits 调用 `get` 方法，响应如下：
 
 [source,json]
 ----
 [{"id":2,"name":"Apple"},{"id":3,"name":"Banana"},{"id":1,"name":"Cherry"},{"id":4,"name":"peach"}]
 ----
 
-We get the expected JSON array.
-RESTEasy Reactive automatically maps the list into a JSON Array, except if instructed otherwise.
+//We get the expected JSON array.
+//RESTEasy Reactive automatically maps the list into a JSON Array, except if instructed otherwise.
+我们得到了预期的 JSON 数组。 RESTEasy Reactive 会自动将列表映射到 JSON 数组，除非有另外说明。
 
-Look at the return type; it returns a `Uni` of `List<Fruit>`.
-`Uni` is an asynchronous type.
-It's a bit like a future.
-It's a placeholder that will get its value (item) later.
-When it receives the item (Mutiny says it _emits_ its item), you can attach some behavior.
-That's how we express the continuation: get a uni, and when the uni emits its item, execute the rest of the processing.
+//Look at the return type; it returns a `Uni` of `List<Fruit>`.
+//`Uni` is an asynchronous type.
+//It's a bit like a future.
+//It's a placeholder that will get its value (item) later.
+//When it receives the item (Mutiny says it _emits_ its item), you can attach some behavior.
+//That's how we express the continuation: get a uni, and when the uni emits its item, execute the rest of the processing.
 
-NOTE: Reactive developers may wonder why we can't return a stream of fruits directly.
-It tends to be a bad idea when dealing with a database.
-Relational databases do not handle streaming well.
-It’s a problem of protocols not designed for this use case.
-So, to stream rows from the database, you need to keep a connection (and sometimes a transaction) open until all the rows are consumed.
-If you have slow consumers, you break the golden rule of databases: don’t hold connections for too long.
-Indeed, the number of connections is rather low, and having consumers keeping them for too long will dramatically reduce the concurrency of your application.
-So, when possible, use a `Uni<List<T>>` and load the content.
-If you have a large set of results, implement pagination.
+查看返回类型： 它是 ` Uni<List<Fruit>>` , `Uni` 是一个异步类型，这和Java中的 Future 有点类似。它是一个占位符，稍后将获取其真实数据。当它接收到数据时，您可以添加一些行为。这就是我们所说的延续行为。
 
-Let's continue our API with `getSingle`:
+
+//NOTE: Reactive developers may wonder why we can't return a stream of fruits directly.
+//It tends to be a bad idea when dealing with a database.
+//Relational databases do not handle streaming well.
+//It’s a problem of protocols not designed for this use case.
+//So, to stream rows from the database, you need to keep a connection (and sometimes a transaction) open until all the rows are consumed.
+//If you have slow consumers, you break the golden rule of databases: don’t hold connections for too long.
+//Indeed, the number of connections is rather low, and having consumers keeping them for too long will dramatically reduce the concurrency of your application.
+//So, when possible, use a `Uni<List<T>>` and load the content.
+//If you have a large set of results, implement pagination.
+NOTE: 响应式开发人员可能想知道为什么我们不能直接获取一个流。在与数据库交互时者往往是一个坏主意，因为关系型数据库不能很好的处理流。如果要求数据库以流式的方式传输数据，您需要与数据库保持连接，直到所有行数据都被处理才关闭。
+如果您的消费比较慢，将打破数据库的一个原则：不要保持太久的连接。事实上，链接数量少，让消费者保持他们太久会大大降低程序的并发性。因此，如果可以请使用 `Uni<List<T>>` ，如果有大量数据请使用分页。
+
+//Let's continue our API with `getSingle`:
+继续我们的 HTTP 端点，编写 `getSingle` 方法代码如下：
 
 [source,java]
 ----
@@ -281,11 +312,13 @@ public Uni<Fruit> getSingle(Long id) {
 }
 ----
 
-In this case, we use `Fruit.findById` to retrieve the fruit.
-It returns a `Uni`, which will complete when the database has retrieved the row.
+//In this case, we use `Fruit.findById` to retrieve the fruit.
+//It returns a `Uni`, which will complete when the database has retrieved the row.
+在上述代码中使用 `Fruit.findById` 来获取水果信息，它返回一个 `Uni` , 它将在数据库检索结束后返回。
+//
+//The `create` method allows adding a new fruit to the database:
 
-The `create` method allows adding a new fruit to the database:
-
+方法 `create` 允许向数据库添加新的水果数据，代码如下：
 [source,java]
 ----
 @POST
@@ -295,18 +328,24 @@ public Uni<Response> create(Fruit fruit) {
 }
 ----
 
-The code is a bit more involved.
-To write to a database, we need a transaction.
-So we use `Panache.withTransaction` to get one (asynchronously) and call the `persist` method when we receive the transaction.
-The `persist` method is also returning a `Uni`.
-This `Uni` emits the result of the insertion of the fruit in the database.
-Once the insertion completes (and that's our continuation), we create a `201 CREATED` response.
-RESTEasy Reactive automatically reads the request body as JSON and creates the `Fruit` instance.
+//The code is a bit more involved.
+//To write to a database, we need a transaction.
+//So we use `Panache.withTransaction` to get one (asynchronously) and call the `persist` method when we receive the transaction.
+//The `persist` method is also returning a `Uni`.
+//This `Uni` emits the result of the insertion of the fruit in the database.
+//Once the insertion completes (and that's our continuation), we create a `201 CREATED` response.
+//RESTEasy Reactive automatically reads the request body as JSON and creates the `Fruit` instance.
 
-NOTE: The `.onItem().transform(...)` can be replaced with `.map(...)`.
-`map` is a shortcut.
+这段代码涉及的内容较多。如果需要写入数据库，我们需要一个事务，因此我们使用 `Panache.withTransaction` 获取一个异步事务，并在事务获取后调用 `persist` 方法，`persist` 方法返回一个 `Uni` ，这个 `Uni` 包含了需要写入数据库的对象。一旦写入完成（这时我们继续），创建 `201 CREATED` 响应。RESTEasy Reactive 会自动帮我们将请求体中的 JSON 转换为 Fruit 实例并完成写入操作。
 
-If you have https://curl.se/[curl] on your machine, you can try the endpoint using:
+//NOTE: The `.onItem().transform(...)` can be replaced with `.map(...)`.
+//`map` is a shortcut.
+
+NOTE: `.onItem().transform(...)` 可以替换为 `.map(...)` , `map` 是一个快捷方法。
+
+//If you have https://curl.se/[curl] on your machine, you can try the endpoint using:
+
+如果您的机器上有 https://curl.se/[curl] ，您可以使用以下命令访问端点。
 
 [source,bash]
 ----
@@ -316,31 +355,38 @@ If you have https://curl.se/[curl] on your machine, you can try the endpoint usi
   http://localhost:8080/fruits
 ----
 
-Following the same ideas, you can implement the other CRUD methods.
+//Following the same ideas, you can implement the other CRUD methods.
 
-== Testing and Running
+//== Testing and Running
+== 测试与运行
 
-Testing a reactive application is similar to testing a non-reactive one: use the HTTP endpoint and verify the HTTP responses.
-The fact that the application is reactive does not change anything.
+//Testing a reactive application is similar to testing a non-reactive one: use the HTTP endpoint and verify the HTTP responses.
+//The fact that the application is reactive does not change anything.
+测试响应式应用程序与测试非响应式应用程序类似，使用 HTTP 端点验证 HTTP 响应。响应式应用程序不会改变测试、运行相关操作。
 
-In https://github.com/quarkusio/quarkus-quickstarts/blob/main/hibernate-reactive-panache-quickstart/src/test/java/org/acme/hibernate/orm/panache/FruitsEndpointTest.java[FruitsEndpointTest.java] you can see how the test for the fruit application can be implemented.
 
-Packaging and running the application does not change either.
+//In https://github.com/quarkusio/quarkus-quickstarts/blob/main/hibernate-reactive-panache-quickstart/src/test/java/org/acme/hibernate/orm/panache/FruitsEndpointTest.java[FruitsEndpointTest.java] you can see how the test for the fruit application can be implemented.
+在 https://github.com/quarkusio/quarkus-quickstarts/blob/main/hibernate-reactive-panache-quickstart/src/test/java/org/acme/hibernate/orm/panache/FruitsEndpointTest.java[FruitsEndpointTest.java] 文件中您可以看到相关测试用例。
 
-You can use the following command as usual:
+//Packaging and running the application does not change either.
+
+//You can use the following command as usual:
+打包和运行应用不会因为它是响应式应用程序而改变，您可以向往常一样使用以下命令：
 
 include::includes/devtools/build.adoc[]
 
-or to build a native executable:
+//or to build a native executable:
+或者构建本机可执行文件：
 
 include::includes/devtools/build-native.adoc[]
 
-You can also package the application in a container.
+//You can also package the application in a container.
 
-To run the application, don’t forget to start a database and provide the configuration to your application.
+//To run the application, don’t forget to start a database and provide the configuration to your application.
 
-For example, you can use Docker to run your database:
+//For example, you can use Docker to run your database:
 
+您还可以将应用程序打包在容器中，如果要运行应用程序，请不要忘记启动数据库程序，并且向应用程序提供配置。例如，您可以使用 Docker 来运行您的数据库：
 [source,bash]
 ----
 docker run -it --rm=true \
@@ -349,7 +395,8 @@ docker run -it --rm=true \
     -p 5432:5432 postgres:14.1
 ----
 
-Then, launch the application using:
+//Then, launch the application using:
+然后，使用以下命令启动应用程序：
 
 [source,bash]
 ----
@@ -360,7 +407,8 @@ java \
    -jar target/quarkus-app/quarkus-run.jar
 ----
 
-Or, if you packaged your application as native executable, use:
+//Or, if you packaged your application as native executable, use:
+如果您想以本机可执行文件执行，请使用以下命令：
 
 [source,bash]
 ----
@@ -370,16 +418,27 @@ Or, if you packaged your application as native executable, use:
   -Dquarkus.datasource.password=quarkus
 ----
 
-The parameters passed to the application are described in the datasource guide.
-There are other ways to configure the application - please check the xref:config-reference.adoc#configuration_sources[configuration guide] to have an overview of the possibilities (such as env variable, .env files and so on).
+//The parameters passed to the application are described in the datasource guide.
+//There are other ways to configure the application - please check the xref:config-reference.adoc#configuration_sources[configuration guide] to have an overview of the possibilities (such as env variable, .env files and so on).
 
-== Going further
+传递给应用程序的参数在数据源指南中进行了描述。有关更多的配置信息（例如 env 变量、.env 文件等）可以查看 xref:config-reference-CN.adoc#configuration_sources[配置教程] 。
+
+//== Going further
+== 走的更远
 
 This guide is a brief introduction to some reactive features offered by Quarkus.
 Quarkus is a reactive framework, and so offers a lot of reactive features.
 
-If you want to continue on this topic check:
 
-* xref:quarkus-reactive-architecture.adoc[The Quarkus Reactive Architecture]
-* xref:mutiny-primer.adoc[Mutiny - an intuitive reactive programming library]
+本教程简要介绍了 Quarkus 提供的一些响应式功能。Quarkus 是一个响应式框架，因此提供了很多响应式特性。 如果您想继续讨论此主题，请检查：
+
+
+
+
+//If you want to continue on this topic check:
+
+//* xref:quarkus-reactive-architecture.adoc[The Quarkus Reactive Architecture]
+* xref:quarkus-reactive-architecture-CN.adoc[Quarkus 响应式架构]
+//* xref:mutiny-primer.adoc[Mutiny - an intuitive reactive programming library]
+* xref:mutiny-primer-CN.adoc[Mutiny  一个直观的响应式编程库]
 

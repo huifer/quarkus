@@ -655,20 +655,30 @@ List<Person> persons = Person.list("status", Sort.by("name").and("birth"), Statu
 //=== Simplified queries
 === 简化查询
 
-Normally, HQL queries are of this form: `from EntityName [where ...] [order by ...]`, with optional elements
-at the end.
+//Normally, HQL queries are of this form: `from EntityName [where ...] [order by ...]`, with optional elements
+//at the end.
+通常 HQL 查询采用以下形式编写：  `from EntityName [where ...] [order by ...]`
 
-If your select query does not start with `from`, we support the following additional forms:
+//If your select query does not start with `from`, we support the following additional forms:
+如果您的查询不以 `from` 开头，我们将附加以下形式：
 
-- `order by ...` which will expand to `from EntityName order by ...`
-- `<singleColumnName>` (and single parameter) which will expand to `from EntityName where <singleColumnName> = ?`
-- `<query>` will expand to `from EntityName where <query>`
 
-If your update query does not start with `update`, we support the following additional forms:
+//- `order by ...` which will expand to `from EntityName order by ...`
+- 在 `from EntityName order by ...` 后添加 `order by ...`
+//- `<singleColumnName>` (and single parameter) which will expand to `from EntityName where <singleColumnName> = ?`
+- 如果是单列查询会以：`from EntityName where <singleColumnName> = ?` 形式添加
+//- `<query>` will expand to `from EntityName where <query>`
+- 在`from EntityName where <query>` 中添加查询条件
 
-- `from EntityName ...` which will expand to `update from EntityName ...`
-- `set? <singleColumnName>` (and single parameter) which will expand to `update from EntityName set <singleColumnName> = ?`
-- `set? <update-query>` will expand to `update from EntityName set <update-query>`
+//If your update query does not start with `update`, we support the following additional forms:
+如果您的更新不以 `update` 开头，我们将附加以下形式：
+
+//- `from EntityName ...` which will expand to `update from EntityName ...`
+- 将 `from EntityName ...` 扩展为 `update from EntityName ...`
+//- `set? <singleColumnName>` (and single parameter) which will expand to `update from EntityName set <singleColumnName> = ?`
+- 如果是单列更新将会以 `update from EntityName set <singleColumnName> = ?` 形式添加
+//- `set? <update-query>` will expand to `update from EntityName set <update-query>`
+- 将 `set? <update-query>` 扩展为 `update from EntityName set <update-query>`
 
 If your delete query does not start with `delete`, we support the following additional forms:
 
@@ -676,8 +686,9 @@ If your delete query does not start with `delete`, we support the following addi
 - `<singleColumnName>` (and single parameter) which will expand to `delete from EntityName where <singleColumnName> = ?`
 - `<query>` will expand to `delete from EntityName where <query>`
 
-NOTE: You can also write your queries in plain
-link:https://docs.jboss.org/hibernate/orm/5.4/userguide/html_single/Hibernate_User_Guide.html#hql[HQL]:
+//NOTE: You can also write your queries in plain
+//link:https://docs.jboss.org/hibernate/orm/5.4/userguide/html_single/Hibernate_User_Guide.html#hql[HQL]:
+NOTE: 您还可以通过编写普通 link:https://docs.jboss.org/hibernate/orm/5.4/userguide/html_single/Hibernate_User_Guide.html#hql[HQL] 进行查询
 
 [source,java]
 ----
@@ -685,9 +696,11 @@ Order.find("select distinct o from Order o left join fetch o.lineItems");
 Order.update("update from Person set name = 'Mortal' where status = ?", Status.Alive);
 ----
 
-=== Named queries
+//=== Named queries
+=== 命名查询
 
-You can reference a named query instead of a (simplified) HQL query by prefixing its name with the '#' character. You can also use named queries for count, update and delete queries.
+//You can reference a named query instead of a (simplified) HQL query by prefixing its name with the '#' character. You can also use named queries for count, update and delete queries.
+您可以通过再起名称前添加 `#` 符号来进行简化的命名查询，而不是简化 HQL 查询。您还可以将命名查询用在计数、更新和删除操作上
 
 [source,java]
 ----
@@ -724,20 +737,24 @@ public class Person extends PanacheEntity {
 
 [WARNING]
 ====
-Named queries can only be defined inside your JPA entity classes (being the Panache entity class, or the repository parameterized type),
-or on one of its super classes.
+//Named queries can only be defined inside your JPA entity classes (being the Panache entity class, or the repository parameterized type),
+//or on one of its super classes.
+命名查询只能在您的 JPA 实体类（作为 Panache 实体类或者仓库模式的泛型类）内部或者其超类上定义。
 ====
 
-=== Query parameters
+//=== Query parameters
+=== 参数查询
 
-You can pass query parameters by index (1-based) as shown below:
+//You can pass query parameters by index (1-based) as shown below:
+你可以按索引（从1开始）传递参数，如下所示
 
 [source,java]
 ----
 Person.find("name = ?1 and status = ?2", "stef", Status.Alive);
 ----
 
-Or by name using a `Map`:
+//Or by name using a `Map`:
+或者按名称传递参数，这样需要使用 `Map` 结构，示例如下：
 
 [source,java]
 ----
@@ -747,7 +764,8 @@ params.put("status", Status.Alive);
 Person.find("name = :name and status = :status", params);
 ----
 
-Or using the convenience class `Parameters` either as is or to build a `Map`:
+//Or using the convenience class `Parameters` either as is or to build a `Map`:
+或者使用 `Parameters` 类来构建 `Map` 结构
 
 [source,java]
 ----
@@ -760,21 +778,30 @@ Person.find("name = :name and status = :status",
          Parameters.with("name", "stef").and("status", Status.Alive));
 ----
 
-Every query operation accepts passing parameters by index (`Object...`), or by name (`Map<String,Object>` or `Parameters`).
+//Every query operation accepts passing parameters by index (`Object...`), or by name (`Map<String,Object>` or `Parameters`).
+每个查询操作都接受通过索引 (`Object...`) 或名称  (`Map<String,Object>` or `Parameters`) 的方式传递参数
 
-=== Query projection
+//=== Query projection
+=== 查询映射
 
 Query projection can be done with the `project(Class)` method on the `PanacheQuery` object that is returned by the `find()` methods.
+查询映射对象可以通过 `project(Class)` 方法将 `PanacheQuery` 对象的 `find` 方法进行处理。
 
-You can use it to restrict which fields will be returned by the database.
+//You can use it to restrict which fields will be returned by the database.
+您可以使用它来限制数据库返回哪些字段。
 
-Hibernate will use **DTO projection** and generate a SELECT clause with the attributes from the projection class.
-This is also called **dynamic instantiation** or **constructor expression**, more info can be found on the Hibernate guide:
-link:https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#hql-select-clause[hql select clause]
+//Hibernate will use **DTO projection** and generate a SELECT clause with the attributes from the projection class.
+//This is also called **dynamic instantiation** or **constructor expression**, more info can be found on the Hibernate guide:
+//link:https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#hql-select-clause[hql select clause]
+
+Hibernate 将使用 **DTO** 映射并生成一个 SELECT 子句。这称为动态实例化（**dynamic instantiation**）或构造函数表达式（**constructor expression**），更多信息可以查看 link:https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#hql-select-clause[HQL SELECT 子句]
+
+
 
 The projection class needs to be a valid Java Bean and have a constructor that contains all its attributes, this constructor will be used to
 instantiate the projection DTO instead of using the entity class. This class must have a matching constructor with all the class attributes as parameters.
 
+映射类需要是一个有效的 Java Bean 并且有一个包含所有属性的构造函数，这个构造函数将用于实例化映射对象，而不是使用实体类。此类不许有匹配的构造函数，并将所有属性作为构造参数。
 
 [source,java]
 ----
@@ -792,19 +819,24 @@ public class PersonName {
 // only 'name' will be loaded from the database
 PanacheQuery<PersonName> query = Person.find("status", Status.Alive).project(PersonName.class);
 ----
-<1> The `@RegisterForReflection` annotation instructs Quarkus to keep the class and its members during the native compilation. More details about the `@RegisterForReflection` annotation can be found on  the xref:writing-native-applications-tips.adoc#registerForReflection[native application tips] page.
-<2> We use public fields here, but you can use private fields and getters/setters if you prefer.
-<3> This constructor will be used by Hibernate, it must be the only constructor in your class and have all the class attributes as parameters.
+//<1> The `@RegisterForReflection` annotation instructs Quarkus to keep the class and its members during the native compilation. More details about the `@RegisterForReflection` annotation can be found on  the xref:writing-native-applications-tips.adoc#registerForReflection[native application tips] page.
+<1>  `@RegisterForReflection` 注解表示 Quarkus 在编译期间保留类以及成员变量，更多关于 `@RegisterForReflection` 注解的信息可以查看 xref:writing-native-applications-tips-CN.adoc#registerForReflection[原生应用提示] 文档
+//<2> We use public fields here, but you can use private fields and getters/setters if you prefer.
+<2> 在这里使用 public 修饰字段，如果您愿意可以使用 private 修饰字段和 getters/setters
+//<3> This constructor will be used by Hibernate, it must be the only constructor in your class and have all the class attributes as parameters.
+<3> 这个构造函数将被 Hibernate 使用，它必须是这个类中的唯一构造函数，并且具有所有成员变量作为构造参数
 
 
 [WARNING]
 ====
-The implementation of the `project(Class)` method uses the constructor's parameter names to build the select clause of the query,
-so the compiler must be configured to store parameter names inside the compiled class.
-This is enabled by default if you are using the Quarkus Maven archetype. If you are not using it, add the property `<maven.compiler.parameters>true</maven.compiler.parameters>` to your `pom.xml`.
+//The implementation of the `project(Class)` method uses the constructor's parameter names to build the select clause of the query,
+//so the compiler must be configured to store parameter names inside the compiled class.
+//This is enabled by default if you are using the Quarkus Maven archetype. If you are not using it, add the property `<maven.compiler.parameters>true</maven.compiler.parameters>` to your `pom.xml`.
+`project(Class)` 方法的实现使用构造函数的参数名称来构件 SELECT 子句，因此必须将编译器配置为：在编译后的类中存储参数名称。如果您使用 Quarkus Maven 骨架工程，则默认开启此功能。如果您没有使用 Quarkus Maven 骨架工程，请添加 `<maven.compiler.parameters>true</maven.compiler.parameters>` 属性到您的 `pom.xml` 文件.
 ====
 
-If in the DTO projection object you have a field from a referenced entity, you can use the `@ProjectedFieldName` annotation to provide the path for the SELECT statement.
+//If in the DTO projection object you have a field from a referenced entity, you can use the `@ProjectedFieldName` annotation to provide the path for the SELECT statement.
+如果在映射对象中有来自引用实体的字段，则可以使用 `@ProjectedFieldName` 注解为 SELECT 提供搜索路径。
 
 [source,java]
 ----
@@ -829,30 +861,41 @@ public class DogDto {
 
 PanacheQuery<DogDto> query = Dog.findAll().project(DogDto.class);
 ----
-<1> The `ownerName` DTO constructor's parameter will be loaded from the `owner.name` HQL property.
+//<1> The `ownerName` DTO constructor's parameter will be loaded from the `owner.name` HQL property.
+<1> 构造函数中 `ownerName` 的取值将从 HQL 中的 `owner.name` 上获取。
 
-== Multiple Persistence Units
+//== Multiple Persistence Units
+== 多单元持久化
 
-The support for multiple persistence units is described in detail in xref:hibernate-orm.adoc#multiple-persistence-units[the Hibernate ORM guide].
+//The support for multiple persistence units is described in detail in xref:hibernate-orm.adoc#multiple-persistence-units[the Hibernate ORM guide].
+在 xref:hibernate-orm-CN.adoc#multiple-persistence-units[Hibernate ORM 教程] 中详细描述了 Hibernate 对多单元持久化的支持。使用 Panache 实现起来很简单：
+//
+//When using Panache, things are simple:
+//
+//* A given Panache entity can be attached to only a single persistence unit.
+* 给定的 Panache 实体只能附加到单个持久化单元
+//* Given that, Panache already provides the necessary plumbing to transparently find the appropriate `EntityManager` associated to a Panache entity.
+* Panache 提供了必要的通道来找到与 Panache 实体联动的 `EntityManager`
 
-When using Panache, things are simple:
+//== Transactions
+== 事务
 
-* A given Panache entity can be attached to only a single persistence unit.
-* Given that, Panache already provides the necessary plumbing to transparently find the appropriate `EntityManager` associated to a Panache entity.
+//Make sure to wrap methods modifying your database (e.g. `entity.persist()`) within a transaction. Marking a
+//CDI bean method `@Transactional` will do that for you and make that method a transaction boundary. We recommend doing
+//so at your application entry point boundaries like your REST endpoint controllers.
+确保修改数据库相关操作的方法封装在事务中（例如 `entity.persist()` ）。使用 `@Transactional` 注解标记 CDI Bean 方法，它将为您完成事务处理。我们建议在您的程序入口使用（例如 REST 端点控制器）
 
-== Transactions
+//JPA batches changes you make to your entities and sends changes (it's called flush) at the end of the transaction or before a query.
+//This is usually a good thing as it's more efficient.
+//But if you want to check optimistic locking failures, do object validation right away or generally want to get immediate feedback, you can force the flush operation by calling `entity.flush()` or even use `entity.persistAndFlush()` to make it a single method call. This will allow you to catch any `PersistenceException` that could occur when JPA send those changes to the database.
+//Remember, this is less efficient so don't abuse it.
+//And your transaction still has to be committed.
 
-Make sure to wrap methods modifying your database (e.g. `entity.persist()`) within a transaction. Marking a
-CDI bean method `@Transactional` will do that for you and make that method a transaction boundary. We recommend doing
-so at your application entry point boundaries like your REST endpoint controllers.
+JPA 会批量处理您对实体所做的变化，并在事务结束或查询之前发送变化（称之为 *刷新* ）。这通常情况下是一件耗时，因为它更加有效。但是如果您想检查乐观锁失败或立即进行对象验证，您可以通过强制调用刷新操作（执行 `entity.flush()`  方法）或者使用 `entity.persistAndFlush()` 方法。这允许您捕获 `PersistenceException` 用来收集 JPA 与数据库交互是发送的异常情况。请记住，这样效率较低，请不要滥用它，而且您的事务仍然需要提交。
 
-JPA batches changes you make to your entities and sends changes (it's called flush) at the end of the transaction or before a query.
-This is usually a good thing as it's more efficient.
-But if you want to check optimistic locking failures, do object validation right away or generally want to get immediate feedback, you can force the flush operation by calling `entity.flush()` or even use `entity.persistAndFlush()` to make it a single method call. This will allow you to catch any `PersistenceException` that could occur when JPA send those changes to the database.
-Remember, this is less efficient so don't abuse it.
-And your transaction still has to be committed.
+//Here is an example of the usage of the flush method to allow making a specific action in case of `PersistenceException`:
+以下是 `flush` 方法的使用示例：
 
-Here is an example of the usage of the flush method to allow making a specific action in case of `PersistenceException`:
 [source,java]
 ----
 @Transactional
@@ -869,13 +912,18 @@ public void create(Parameter parameter){
 }
 ----
 
-== Lock management
+//== Lock management
+== 锁管理
 
-Panache provides direct support for database locking with your entity/repository, using `findById(Object, LockModeType)` or `find().withLock(LockModeType)`.
+//Panache provides direct support for database locking with your entity/repository, using `findById(Object, LockModeType)` or `find().withLock(LockModeType)`.
 
-The following examples are for the active record pattern, but the same can be used with repositories.
+Panache 中使用 `findById(Object, LockModeType)` 或者 `find().withLock(LockModeType)` 支持传入锁
 
-=== First: Locking using findById().
+//The following examples are for the active record pattern, but the same can be used with repositories.
+以活动记录模式为例，锁的使用如下，这个方式同样适用于仓库模式
+
+//=== First: Locking using findById().
+=== 第一： 锁定 findById 方法
 
 [source,java]
 ----
@@ -892,7 +940,8 @@ public class PersonEndpoint {
 }
 ----
 
-=== Second: Locking in a find().
+//=== Second: Locking in a find().
+=== 第二： 锁定 find 方法
 
 [source,java]
 ----
@@ -909,15 +958,21 @@ public class PersonEndpoint {
 }
 ----
 
-Be careful that locks are released when the transaction ends, so the method that invokes the lock query must be annotated with the `@Transactional` annotation.
+//Be careful that locks are released when the transaction ends, so the method that invokes the lock query must be annotated with the `@Transactional` annotation.
+注意，事务结束时灰释放所，因此调用所查询的方法必须使用 `@Transactional` 注解。
 
-== Custom IDs
+//== Custom IDs
+== 自定义 ID
 
-IDs are often a touchy subject, and not everyone's up for letting them handled by the framework, once again we
-have you covered.
+//IDs are often a touchy subject, and not everyone's up for letting them handled by the framework, once again we
+//have you covered.
+//
+//
+//You can specify your own ID strategy by extending `PanacheEntityBase` instead of `PanacheEntity`. Then
+//you just declare whatever ID you want as a public field:
 
-You can specify your own ID strategy by extending `PanacheEntityBase` instead of `PanacheEntity`. Then
-you just declare whatever ID you want as a public field:
+ID 通常是一个敏感主题，并不是每一个人都愿意让框架处理它。您可以通过拓展来指定自己的 ID 策略，实体类继承 `PanacheEntityBase` 而不继承 `PanacheEntity`，您只需要声明 ID 字段：
+
 
 [source,java]
 ----
@@ -937,8 +992,10 @@ public class Person extends PanacheEntityBase {
 }
 ----
 
-If you're using repositories, then you will want to extend `PanacheRepositoryBase` instead of `PanacheRepository`
-and specify your ID type as an extra type parameter:
+//If you're using repositories, then you will want to extend `PanacheRepositoryBase` instead of `PanacheRepository`
+//and specify your ID type as an extra type parameter:
+
+如果您正在使用仓库模式，那么您应该实现 `PanacheRepositoryBase` 接口而不是 `PanacheRepository` 接口，`PanacheRepositoryBase` 接口允许您自定义 ID 类型。
 
 [source,java]
 ----
@@ -948,15 +1005,18 @@ public class PersonRepository implements PanacheRepositoryBase<Person,Integer> {
 }
 ----
 
-== Mocking
+//== Mocking
+== 模拟
 
-=== Using the active record pattern
+//=== Using the active record pattern
+=== 使用活动记录模式
 
-If you are using the active record pattern you cannot use Mockito directly as it does not support mocking static methods,
-but you can use the `quarkus-panache-mock` module which allows you to use Mockito to mock all provided static
-methods, including your own.
-
-Add this dependency to your `pom.xml`:
+//If you are using the active record pattern you cannot use Mockito directly as it does not support mocking static methods,
+//but you can use the `quarkus-panache-mock` module which allows you to use Mockito to mock all provided static
+//methods, including your own.
+//
+//Add this dependency to your `pom.xml`:
+如果您使用的是活动记录模式，则不能够直接使用 Mockito ，因为它不支持模拟静态方法，但是您可以使用 `quarkus-panache-mock` 模块，它允许您使用 Mockito 模拟所提供的静态方法，依赖信息如下：
 
 [source,xml]
 ----
@@ -968,7 +1028,8 @@ Add this dependency to your `pom.xml`:
 ----
 
 
-Given this simple entity:
+//Given this simple entity:
+给定简单实体
 
 [source,java]
 ----
@@ -983,7 +1044,8 @@ public class Person extends PanacheEntity {
 }
 ----
 
-You can write your mocking test like this:
+//You can write your mocking test like this:
+您可以向这样编写模拟测试
 
 [source,java]
 ----
@@ -1058,12 +1120,17 @@ public class PanacheFunctionalityTest {
     }
 }
 ----
-<1> Be sure to call your `verify` and `do*` methods on `PanacheMock` rather than `Mockito`, otherwise you won't know
-what mock object to pass.
+//<1> Be sure to call your `verify` and `do*` methods on `PanacheMock` rather than `Mockito`, otherwise you won't know
+//what mock object to pass.
 
-==== Mocking `EntityManager`, `Session` and entity instance methods
+<1> 请务必调用 `PanacheMock` 提供的 `verify` 方法和 `do*` 方法。而不是 `Mockito` 类中提供的方法，否则您将不知道要传递什么对象进行模拟。
 
-If you need to mock entity instance methods, such as `persist()` you can do it by mocking the Hibernate ORM `Session` object:
+//==== Mocking `EntityManager`, `Session` and entity instance methods
+==== 模拟 `EntityManager` 、 `Session` 和实体实例化方法
+
+
+//If you need to mock entity instance methods, such as `persist()` you can do it by mocking the Hibernate ORM `Session` object:
+如果您需要模拟实体实例化方法，比如 `persist()` 方法，您可以通过模拟 Hibernate ORM Session 对象来实现：
 
 [source,java]
 ----
@@ -1093,10 +1160,12 @@ public class PanacheMockingTest {
 }
 ----
 
-=== Using the repository pattern
+//=== Using the repository pattern
+=== 使用仓库模式
 
-If you are using the repository pattern you can use Mockito directly, using the `quarkus-junit5-mockito` module,
-which makes mocking beans much easier:
+//If you are using the repository pattern you can use Mockito directly, using the `quarkus-junit5-mockito` module,
+//which makes mocking beans much easier:
+如果您使用仓库模式，您可以直接使用 Mockito ，使用 `quarkus-junit5-mockito` 模块，这使得模拟 bean 更容易：
 
 [source,xml]
 ----
@@ -1107,7 +1176,8 @@ which makes mocking beans much easier:
 </dependency>
 ----
 
-Given this simple entity:
+//Given this simple entity:
+给定简单实体
 
 [source,java]
 ----
@@ -1122,7 +1192,8 @@ public class Person {
 }
 ----
 
-And this repository:
+//And this repository:
+仓库对象：
 
 [source,java]
 ----
@@ -1134,7 +1205,8 @@ public class PersonRepository implements PanacheRepository<Person> {
 }
 ----
 
-You can write your mocking test like this:
+//You can write your mocking test like this:
+您可以向这样编写模拟测试
 
 [source,java]
 ----
@@ -1184,53 +1256,77 @@ public class PanacheFunctionalityTest {
 }
 ----
 
-== How and why we simplify Hibernate ORM mappings
+//== How and why we simplify Hibernate ORM mappings
+== 为什么要如此简化 Hibernate ORM 的映射
 
-When it comes to writing Hibernate ORM entities, there are a number of annoying things that users have grown used to
-reluctantly deal with, such as:
+//When it comes to writing Hibernate ORM entities, there are a number of annoying things that users have grown used to
+//reluctantly deal with, such as:
+在编写 Hibernate ORM 实体时，用户已经习惯了不情愿的处理许多令人烦恼的事情，例如：
 
-- Duplicating ID logic: most entities need an ID, most people don't care how it's set, because it's not really
-relevant to your model.
+//- Duplicating ID logic: most entities need an ID, most people don't care how it's set, because it's not really
+//relevant to your model.
+- 重复 ID 逻辑，大多数实体都需要一个ID，大多数人都不关心它是如何设置的，因为它与您的模型并非直接相关
+
 - Traditional EE patterns advise to split entity definition (the model) from the operations you can do on them
 (DAOs, Repositories), but really that requires a split between the state and its operations even though
 we would never do something like that for regular objects in the Object Oriented architecture, where state and methods
 are in the same class. Moreover, this requires two classes per entity, and requires injection of the DAO or Repository
 where you need to do entity operations, which breaks your edit flow and requires you to get out of the code you're
 writing to set up an injection point before coming back to use it.
-- Hibernate queries are super powerful, but overly verbose for common operations, requiring you to write queries even
-when you don't need all the parts.
-- Hibernate is very general-purpose, but does not make it trivial to do trivial operations that make up 90% of our
-model usage.
+- 传统 EE 模型中建议将实体定义（模型）从您可以对它们的执行操作（DAO,仓库) 中分离，单实际上这需要在状态和操作之间进行分离。
 
-With Panache, we took an opinionated approach to tackle all these problems:
+//- Hibernate queries are super powerful, but overly verbose for common operations, requiring you to write queries even
+//when you don't need all the parts.
+- Hibernate 查询非常强大，但对于常见操作来说过于荣昌，及时您不需要所有部分，也需要编写查询。
+//- Hibernate is very general-purpose, but does not make it trivial to do trivial operations that make up 90% of our
+//model usage.
+- Hibernate 是非常通用的，单不会让我们的模型使用率高达 90% 的琐碎操作变得轻而易举。
 
-- Make your entities extend `PanacheEntity`: it has an ID field that is auto-generated. If you require
-a custom ID strategy, you can extend `PanacheEntityBase` instead and handle the ID yourself.
+//With Panache, we took an opinionated approach to tackle all these problems:
+借助 Panache ，我们采取了一种自以为是的方法来解决这些问题：
+
+//- Make your entities extend `PanacheEntity`: it has an ID field that is auto-generated. If you require
+//a custom ID strategy, you can extend `PanacheEntityBase` instead and handle the ID yourself.
+- 您的实体通过继承 `PanacheEntity` ： 它有一个自动生成的 ID 字段，如果宁需要自定义 ID策略，则可以继承 `PanacheEntityBase` 拓展ID。
 - Use public fields. Get rid of dumb getter and setters. Hibernate ORM w/o Panache also doesn't require you to use getters and setters,
 but Panache will additionally generate all getters and setters that are missing, and rewrite every access to these fields to use the accessor methods. This way you can still
 write _useful_ accessors when you need them, which will be used even though your entity users still use field accesses. This implies that from the Hibernate perspective you're using accessors via getters and setters even while it looks like field accessors.
-- With the active record pattern: put all your entity logic in static methods in your entity class and don't create DAOs.
-Your entity superclass comes with lots of super useful static methods, and you can add your own in your entity class.
-Users can just start using your entity `Person` by typing `Person.` and getting completion for all the operations in a single place.
-- Don't write parts of the query that you don't need: write `Person.find("order by name")` or
-`Person.find("name = ?1 and status = ?2", "stef", Status.Alive)` or even better
-`Person.find("name", "stef")`.
+//- With the active record pattern: put all your entity logic in static methods in your entity class and don't create DAOs.
+//Your entity superclass comes with lots of super useful static methods, and you can add your own in your entity class.
+//Users can just start using your entity `Person` by typing `Person.` and getting completion for all the operations in a single place.
+- 使用活动记录模式，将所有实体逻辑放在实体的静态方法中，不需要创建DAO。您的实体类中会携带很多有用的静态方法，您可以在实体类中增加自己想要的方法，用户只需要在一个地方输入 `Person` 即可操作实体相关内容。
 
-That's all there is to it: with Panache, Hibernate ORM has never looked so trim and neat.
+//- Don't write parts of the query that you don't need: write `Person.find("order by name")` or
+//`Person.find("name = ?1 and status = ?2", "stef", Status.Alive)` or even better
+//`Person.find("name", "stef")`.
+- 不需要编写查询部分； 编写 `Person.find("order by name")` 、 `Person.find("name = ?1 and status = ?2", "stef", Status.Alive)` 甚至于 `Person.find("name", "stef")`
 
-== Defining entities in external projects or jars
+//That's all there is to it: with Panache, Hibernate ORM has never looked so trim and neat.
+有了 Panache Hibernate ORM 从未看起来如此简单
 
-Hibernate ORM with Panache relies on compile-time bytecode enhancements to your entities.
+//== Defining entities in external projects or jars
+== 在外部项目或 jar 中定义实体
 
-It attempts to identify archives with Panache entities (and consumers of Panache entities)
-by the presence of the marker file `META-INF/panache-archive.marker`. Panache includes an
-annotation processor that will automatically create this file in archives that depend on
-Panache (even indirectly). If you have disabled annotation processors you may need to create
-this file manually in some cases.
+//Hibernate ORM with Panache relies on compile-time bytecode enhancements to your entities.
+带有 Panache 的 Hibernate ORM 依赖于对实体的编译时字节码增强。
 
-WARNING: If you include the jpa-modelgen annotation processor this will exclude the Panache
-annotation processor by default. If you do this you should either create the marker file
-yourself, or add the `quarkus-panache-common` as well, as shown below:
+
+
+//It attempts to identify archives with Panache entities (and consumers of Panache entities)
+//by the presence of the marker file `META-INF/panache-archive.marker`. Panache includes an
+//annotation processor that will automatically create this file in archives that depend on
+//Panache (even indirectly). If you have disabled annotation processors you may need to create
+//this file manually in some cases.
+
+它尝试通过标记文件  `META-INF/panache-archive.marker` 来识别 Panache 实体，Panache包含一个注解处理器，它将自动以来在 Panache （或者间接依赖）。如果您禁用了注解处理器，在某些情况下需要手动创建该文件。
+
+
+
+//WARNING: If you include the jpa-modelgen annotation processor this will exclude the Panache
+//annotation processor by default. If you do this you should either create the marker file
+//yourself, or add the `quarkus-panache-common` as well, as shown below:
+WARNING: 如果您包含 jpa-modelgen 注解处理器，在默认情况下是排除 Panache 注解处理器。如果您这样做，您应该自己创建标记文件，或者添加 `quarkus-panache-common` 依赖，
+
 
 [source,xml]
 ----
